@@ -197,8 +197,8 @@ export const getMainDiagnosticQuestionSet = async (filters: { board?: string; cl
   });
 };
 
-export const getPracticeQuestionSet = (filters: { board: string; class: string; l1Skill: string; idNotIn?: string[] }): Promise<any> => {
-  let whereClause: any = {
+export const getPracticeQuestionSet = (filters: { board: string; class: string; l1Skill: string }): Promise<any> => {
+  const whereClause: any = {
     purpose: {
       [Op.ne]: QuestionSetPurposeType.MAIN_DIAGNOSTIC,
     },
@@ -221,22 +221,13 @@ export const getPracticeQuestionSet = (filters: { board: string; class: string; 
     },
   };
 
-  if (filters.idNotIn?.length) {
-    whereClause = {
-      ...whereClause,
-      identifier: {
-        [Op.notIn]: filters.idNotIn,
-      },
-    };
-  }
-
   return QuestionSet.findOne({
     where: whereClause,
     order: [['sequence', 'ASC']],
   });
 };
 
-export const getNextPracticeQuestionSetInSequence = (filters: { board: string; class: string; l1Skill: string; lastSetSequence: number }): Promise<any> => {
+export const getNextPracticeQuestionSetInSequence = (filters: { board: string; classes: string[]; l1Skill: string; lastSetSequence: number }): Promise<any> => {
   const whereClause: any = {
     sequence: {
       [Op.gt]: filters.lastSetSequence,
@@ -252,7 +243,9 @@ export const getNextPracticeQuestionSetInSequence = (filters: { board: string; c
       },
       class: {
         name: {
-          en: filters.class,
+          en: {
+            [Op.in]: filters.classes,
+          },
         },
       },
       l1_skill: {
