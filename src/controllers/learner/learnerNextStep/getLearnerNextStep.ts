@@ -12,6 +12,9 @@ import { getMainDiagnosticQuestionSet, getNextPracticeQuestionSetInSequence, get
 import { findAggregateData } from '../../../services/learnerAggregateData';
 import { PASSING_MARKS } from '../../../constants/constants';
 import { QuestionSetPurposeType } from '../../../enums/questionSetPurposeType';
+import { boardMaster } from '../../../models/boardMaster';
+import { classMaster } from '../../../models/classMaster';
+import { fetchSkillsByIds } from '../../../services/skill';
 
 const getLearnerNextStep = async (req: Request, res: Response) => {
   const learner_id = _.get(req, 'params.learner_id');
@@ -38,7 +41,7 @@ const getLearnerNextStep = async (req: Request, res: Response) => {
   /**
    * Validate learner board
    */
-  const boardEntity = await getEntitySearch({ entityType: 'board', filters: { name: [{ en: learnerBoard }] } });
+  const boardEntity: boardMaster = await getEntitySearch({ entityType: 'board', filters: { name: [{ en: learnerBoard }] } });
   if (!boardEntity) {
     const code = 'LEARNER_BOARD_NOT_FOUND';
     logger.error({ code, apiId, msgid, resmsgid, message: `Learner Board: ${learnerBoard} does not exist` });
@@ -48,22 +51,37 @@ const getLearnerNextStep = async (req: Request, res: Response) => {
   /**
    * Validate learner class
    */
-  const classEntity = await getEntitySearch({ entityType: 'class', filters: { name: [{ en: learnerBoard }] } });
+  const classEntity: classMaster = await getEntitySearch({ entityType: 'class', filters: { name: [{ en: learnerBoard }] } });
   if (!classEntity) {
     const code = 'LEARNER_CLASS_NOT_FOUND';
     logger.error({ code, apiId, msgid, resmsgid, message: `Learner Class: ${learnerClass} does not exist` });
     throw amlError(code, `Learner Class: ${learnerClass} does not exist`, 'NOT_FOUND', 404);
   }
 
-  // TODO: Pick these from class-skill mapping in boardEntity
-  const highestApplicableGrade = 'Class 4';
-  const requiredL1Skills = ['Addition', 'Subtraction'];
+  const class_ids = (boardEntity?.class_ids || []).sort((a, b) => a.sequence_no - b.sequence_no);
+
+  const currentGradeIndex = class_ids.findIndex((datum) => datum.id === classEntity.identifier);
+  const highestApplicableGradeMapping = class_ids[currentGradeIndex - 1] as { id: string; l1_skill_ids: string[] };
+  const highestApplicableGrade = await getEntitySearch({ entityType: 'class', filters: { identifier: highestApplicableGradeMapping.id } });
+  const requiredL1SkillsIds = highestApplicableGradeMapping.l1_skill_ids;
+  const requiredL1Skills = await fetchSkillsByIds(requiredL1SkillsIds);
 
   let questionSetId: string = '';
 
-  for (const skill of requiredL1Skills) {
-    // TODO: Pick these from class-skill mapping in boardEntity on the basis of current skill
-    const allApplicableGrades = ['Class 1', 'Class 2', 'Class 3', 'Class 4'];
+  for (const skillEntity of requiredL1Skills) {
+    const {
+      name: { en: skill },
+      identifier,
+    } = skillEntity;
+    const allApplicableGradeIds = class_ids.reduce((agg: string[], curr) => {
+      if (curr.l1_skill_ids.includes(identifier)) {
+        agg.push(curr.id);
+      }
+      return agg;
+    }, []);
+
+    const allApplicableGradeEntities: classMaster[] = await getEntitySearch({ entityType: 'class', filters: { identifier: allApplicableGradeIds } });
+    const allApplicableGrades = allApplicableGradeEntities.map((grade) => grade.name.en);
     /**
      * If not a fresh user
      */
