@@ -1,9 +1,9 @@
 {
   "info": {
-    "_postman_id": "d2adaab5-e08f-444e-9d7a-201df6f927f3",
+    "_postman_id": "c5e6ac59-31ed-42ed-a630-c37ea7428b5f",
     "name": "AML_service",
-    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-    "_exporter_id": "18597192"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23511676"
   },
   "item": [
     {
@@ -23,7 +23,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/tenant/create"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/tenant/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "tenant", "create"]
+            }
           },
           "response": []
         },
@@ -42,7 +48,13 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "http://localhost:3001/api/v1/tenant/read/96a33ea0-5799-4edd-b2ee-373451b01d58",
+            "url": {
+              "raw": "http://localhost:3001/api/v1/tenant/read/96a33ea0-5799-4edd-b2ee-373451b01d58",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "tenant", "read", "96a33ea0-5799-4edd-b2ee-373451b01d58"]
+            },
             "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
           },
           "response": []
@@ -71,7 +83,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/tenant/update/3a157850-9bcc-4030-937e-15fa0221ec99",
+            "url": {
+              "raw": "http://localhost:3001/api/v1/tenant/update/3a157850-9bcc-4030-937e-15fa0221ec99",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "tenant", "update", "3a157850-9bcc-4030-937e-15fa0221ec99"]
+            },
             "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
           },
           "response": []
@@ -100,7 +118,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/tenant/search",
+            "url": {
+              "raw": "http://localhost:3001/api/v1/tenant/search",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "tenant", "search"]
+            },
             "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
           },
           "response": []
@@ -124,7 +148,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/master/search"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/master/search",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "master", "search"]
+            }
           },
           "response": []
         },
@@ -135,14 +165,20 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"api.master.create\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-05T01:51:36Z\",\n  \"params\": {\n    \"msgid\": \"c43785c4-d02a-411d-8466-466ad8ae6fba\"\n  },\n  \"request\": {\n    \"skillData\": [\n      {\n        \"name\": {\n          \"en\": \"Addition\",\n          \"ka\": \"ಒಲವಾಯ್ತು\"\n        },\n        \"description\":  \"This is Addition\",\n        \"type\": \"l1_skill\"\n      },\n      {\n        \"name\": {\n          \"en\": \"1D\",\n          \"ka\": \"1D\"\n        },\n        \"description\": \"This is 1D\",\n        \"type\": \"l2_skill\"\n      },\n      {\n        \"name\": {\n          \"en\": \"1D+1D\",\n          \"ka\": \"1D+1D\"\n        },\n        \"description\": \"This is 1D\",\n        \"type\": \"l3_skill\"\n      }\n    ],\n    \"classData\": [\n      {\n        \"name\": {\n          \"en\": \"Class One\",\n          \"ka\": \"ಕ್ಲಾಸ್ ಒನ್\"\n        },\n        \"description\": {\n          \"en\": \"Description for Class One\",\n          \"ka\": \"ಕ್ಲಾಸ್ ಒನ್ ಗೆ ವಿವರ\"\n        },\n        \"prerequisites\": [\"Class Zero\"]\n      },\n      {\n        \"name\": {\n          \"en\": \"Class Two\",\n          \"ka\": \"ವರ್ಗ ಎರಡು\"\n        },\n        \"description\": {\n          \"en\": \"Description for Class Two\",\n          \"ka\": \"ವರ್ಗ ಎರಡು ಗೆ ವಿವರ\"\n        },\n        \"prerequisites\": [\"Class One\"]\n      }\n    ],\n\"boardData\": [\n  {\n    \"name\": {\n      \"en\": \"Karnataka\",\n      \"ka\": \"ಕರ್ನಾಟಕ\"\n    },\n    \"description\": {\n      \"en\": \"this is Karnataka board\",\n      \"ka\": \"ಇದು ಕರ್ನಾಟಕ ಬೋರ್ಡ್\"\n    }\n  }\n],\n    \"subskillData\": [\n      {\n        \"name\": {\n          \"en\": \"Basic Addition\",\n          \"ka\": \"ಮೂಲ ಸೇರ್ಪಡೆ\"\n        },\n        \"description\": {\n          \"en\": \"This skill teaches basic addition of numbers\",\n          \"ka\": \"ಈ ಕೌಶಲ್ಯವು ಸಂಖ್ಯೆಗಳ ಮೂಲ ಸೇರ್ಪಡೆಯನ್ನು ಕಲಿಸುತ್ತದೆ\"\n        }\n      },\n      {\n        \"name\": {\n          \"en\": \"Advanced Multiplication\",\n          \"ka\": \"ಆಧುನಿಕ ಗುಣಾಕಾರ\"\n        },\n        \"description\": {\n          \"en\": \"Multiplication with larger numbers\",\n          \"ka\": \"ದೊಡ್ಡ ಸಂಖ್ಯೆಗಳೊಂದಿಗೆ ಗುಣಾಕಾರ\"\n        }\n      },\n      {\n        \"name\": {\n          \"en\": \"Fraction Subtraction\",\n          \"ka\": \"ಅಂಶಗಳ ವಜಾಗೊಳಿಸುವಿಕೆ\"\n        },\n        \"description\": {\n          \"en\": \"Subtract fractions and mixed numbers\",\n          \"ka\": \"ಭಿನ್ನರಾಶಿ ಮತ್ತು ಮಿಶ್ರ ಸಂಖ್ಯೆಗಳ ವಜಾಗೊಳಿಸುವಿಕೆ\"\n        }\n      },\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics\",\n          \"ka\": \"ಜ್ಯಾಮಿತಿ ಮೂಲಭೂತಗಳು\"\n        },\n        \"description\": {\n          \"en\": \"Learn basic geometric shapes and properties\",\n          \"ka\": \"ಮೂಲಭೂತ ಜ್ಯಾಮಿತೀಯ ಆಕಾರಗಳು ಮತ್ತು ಗುಣಲಕ್ಷಣಗಳನ್ನು ಕಲಿಯಿರಿ\"\n        }\n      }\n    ]\n  }\n}\n",
+              "raw": "{\n  \"id\": \"api.master.create\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-05T01:51:36Z\",\n  \"params\": {\n    \"msgid\": \"c43785c4-d02a-411d-8466-466ad8ae6fba\"\n  },\n  \"request\": {\n    \"skillData\": [\n      {\n        \"name\": {\n          \"en\": \"Addition\",\n          \"ka\": \"ಒಲವಾಯ್ತು\"\n        },\n        \"description\":  \"This is Addition\",\n        \"type\": \"l1_skill\"\n      },\n      {\n        \"name\": {\n          \"en\": \"1D\",\n          \"ka\": \"1D\"\n        },\n        \"description\": \"This is 1D\",\n        \"type\": \"l2_skill\"\n      },\n      {\n        \"name\": {\n          \"en\": \"1D+1D\",\n          \"ka\": \"1D+1D\"\n        },\n        \"description\": \"This is 1D\",\n        \"type\": \"l3_skill\"\n      }\n    ],\n    \"classData\": [\n      {\n        \"name\": {\n          \"en\": \"Class One\",\n          \"ka\": \"ಕ್ಲಾಸ್ ಒನ್\"\n        },\n        \"description\": {\n          \"en\": \"Description for Class One\",\n          \"ka\": \"ಕ್ಲಾಸ್ ಒನ್ ಗೆ ವಿವರ\"\n        },\n        \"prerequisites\": [\"Class Zero\"]\n      },\n      {\n        \"name\": {\n          \"en\": \"Class Two\",\n          \"ka\": \"ವರ್ಗ ಎರಡು\"\n        },\n        \"description\": {\n          \"en\": \"Description for Class Two\",\n          \"ka\": \"ವರ್ಗ ಎರಡು ಗೆ ವಿವರ\"\n        },\n        \"prerequisites\": [\"Class One\"]\n      }\n    ],\n\"boardData\": [\n  {\n    \"name\": {\n      \"en\": \"Karnataka\",\n      \"ka\": \"ಕರ್ನಾಟಕ\"\n    },\n    \"description\": {\n      \"en\": \"this is Karnataka board\",\n      \"ka\": \"ಇದು ಕರ್ನಾಟಕ ಬೋರ್ಡ್\"\n    }\n  }\n],\n    \"subskillData\": [\n      {\n        \"name\": {\n          \"en\": \"Basic Addition\",\n          \"ka\": \"ಮೂಲ ಸೇರ್ಪಡೆ\"\n        },\n        \"description\": {\n          \"en\": \"This skill teaches basic addition of numbers\",\n          \"ka\": \"ಈ ಕೌಶಲ್ಯವು ಸಂಖ್ಯೆಗಳ ಮೂಲ ಸೇರ್ಪಡೆಯನ್ನು ಕಲಿಸುತ್ತದೆ\"\n        }\n      },\n      {\n        \"name\": {\n          \"en\": \"Advanced Multiplication\",\n          \"ka\": \"ಆಧುನಿಕ ಗುಣಾಕಾರ\"\n        },\n        \"description\": {\n          \"en\": \"Multiplication with larger numbers\",\n          \"ka\": \"ದೊಡ್ಡ ಸಂಖ್ಯೆಗಳೊಂದಿಗೆ ಗುಣಾಕಾರ\"\n        }\n      },\n      {\n        \"name\": {\n          \"en\": \"Fraction Subtraction\",\n          \"ka\": \"ಅಂಶಗಳ ವಜಾಗೊಳಿಸುವಿಕೆ\"\n        },\n        \"description\": {\n          \"en\": \"Subtract fractions and mixed numbers\",\n          \"ka\": \"ಭಿನ್ನರಾಶಿ ಮತ್ತು ಮಿಶ್ರ ಸಂಖ್ಯೆಗಳ ವಜಾಗೊಳಿಸುವಿಕೆ\"\n        }\n      },\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics2\"\n        },\n        \"description\": {\n          \"en\": \"Learn basic geometric shapes and properties\",\n          \"ka\": \"ಮೂಲಭೂತ ಜ್ಯಾಮಿತೀಯ ಆಕಾರಗಳು ಮತ್ತು ಗುಣಲಕ್ಷಣಗಳನ್ನು ಕಲಿಯಿರಿ\"\n        }\n      }\n    ]\n  }\n}\n",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/master/create"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/master/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "master", "create"]
+            }
           },
           "response": []
         }
@@ -165,7 +201,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/skill-taxonomy/search"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/skill-taxonomy/search",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "skill-taxonomy", "search"]
+            }
           },
           "response": []
         },
@@ -183,7 +225,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/skill-taxonomy/create/karnatakaTaxoonmy"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/skill-taxonomy/create/karnatakaTaxoonmy",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "skill-taxonomy", "create", "karnatakaTaxoonmy"]
+            }
           },
           "response": []
         }
@@ -199,14 +247,20 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"api.board.update\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-19T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"unique-message-id\"\n  },\n  \"request\": {\n    \"name\":{\"en\":\"ANDRA PRADESH\"},\n    \"class_ids\":{\n    \"ids\":[1,2]\n    }\n  }\n}",
+              "raw": "{\n  \"id\": \"api.board.update\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-19T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"unique-message-id\"\n  },\n  \"request\": {\n    \"name\":{\"en\":\"ANDRA PRADESH\"},\n    \"class_ids\":[{\n    \"id\":\"9b50a7e7-fdec-4fd7-bf63-84b3e62e4248\",\n    \"sequence_no\":1,\n    \"l1_skill_ids\":[\"9b50a7e7-fdec-4fd7-bf63-84b3e62e334f\"]\n    }]\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/board/update/af440fb6-891c-4e71-b568-5e8a334558cf"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/board/update/041115da-9a89-4663-bd36-ecc9b1572e7a",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "board", "update", "041115da-9a89-4663-bd36-ecc9b1572e7a"]
+            }
           },
           "response": []
         }
@@ -229,7 +283,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/skill/update/cca4b285-aff0-4d01-a800-0b067d16c205"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/skill/update/cca4b285-aff0-4d01-a800-0b067d16c205",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "skill", "update", "cca4b285-aff0-4d01-a800-0b067d16c205"]
+            }
           },
           "response": []
         }
@@ -252,7 +312,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/class/update/67594bf6-eb52-4c1b-aa23-b45dd0fbdbe"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/class/update/67594bf6-eb52-4c1b-aa23-b45dd0fbdbe",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "class", "update", "67594bf6-eb52-4c1b-aa23-b45dd0fbdbe"]
+            }
           },
           "response": []
         }
@@ -275,7 +341,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/subSkill/update/90d0e4a9-75a7-4ba4-98f8-7c18441eb52b"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/subSkill/update/90d0e4a9-75a7-4ba4-98f8-7c18441eb52b",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "subSkill", "update", "90d0e4a9-75a7-4ba4-98f8-7c18441eb52b"]
+            }
           },
           "response": []
         }
@@ -291,14 +363,20 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"api.question.create\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-13T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"aa083e25-09a6-4e52-95d5-1e780906d886\"\n  },\n  \"request\": {\n    \"question_set_id\": \"dd3ee947-a88d-4fba-90a8-035ea7faeb1a\",\n    \"question_type\": \"Mcq\",\n    \"operation\": \"Addition\",\n    \"name\": {\n      \"en\": \"This is a question for Division\"\n    },\n    \"description\": {\n      \"en\": \"This is the description for the question\"\n    },\n    \"sequence_no\":1,\n    \"hints\": {\n      \"en\": [\n        \"This is a hint for the question\"\n      ]\n    },\n    \"tenant\": {\n     \"name\": {\"en\":\"Karnataka\"}\n    },\n    \"repository\": {\n      \"name\": {\n\"en\": \"Question Repository\"\n\n}\n    },\n    \"taxonomy\": {\n      \"board\": {\"name\":{\"en\": \"Central Board of Secondary Education\"}},\n      \"class\": {\"name\":{\"en\":\"one\"}},\n      \"l1_skill\": {\"name\":{\"en\":\"Addition\"}} ,\n      \"l2_skill\": [{\"name\":{\"en\":\"1-digit Addition\"}}] ,\n       \"l3_skill\": [{\"name\":{\"en\":\"2Dx1D with carry (non-zero digits)\"}}]\n    },\n    \"gradient\": \"g4\",\n    \"benchmark_time\":40,\n    \"sub_skills\": [\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics\"\n        }\n      }\n    ],\n    \"media\": [{\n      \"fileName\": \"Mcq_uplaod_image.png\",\n      \"mediaType\": \"Image\",\n      \"mimeType\": \"image/png\",\n      \"src\": \"media/content\"\n    },\n{\n      \"fileName\": \"Mcq_uplaod_image1.png\",\n      \"mediaType\": \"Image\",\n      \"mimeType\": \"image/png\",\n      \"src\": \"media/content\"\n    }\n],\n\n  \"question_body\": {\n            \"options\": {\n                \"mcq_question_image\": \"image_url.jpg\"\n            },\n            \"correct_option\": \"Option A\",\n            \"wrongAnswers\": [\n                {\n                    \"carry\": [\n                        12,\n                        2\n                    ]\n                }\n            ]\n        }\n  }\n}\n",
+              "raw": "{\n  \"id\": \"api.question.create\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-13T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"aa083e25-09a6-4e52-95d5-1e780906d886\"\n  },\n  \"request\": {\n    \"question_type\": \"Mcq\",\n    \"operation\": \"Addition\",\n    \"name\": {\n      \"en\": \"This is a question for Division\"\n    },\n    \"description\": {\n      \"en\": \"This is the description for the question\"\n    },\n    \"hints\": {\n      \"en\": [\n        \"This is a hint for the question\"\n      ]\n    },\n    \"tenant\": {\n     \"name\": {\"en\":\"Karnataka\"}\n    },\n    \"repository\": {\n      \"name\": {\n\"en\": \"AML\"\n\n}\n    },\n    \"taxonomy\": {\n      \"board\": {\"name\":{\"en\": \"CBSE\"}},\n      \"class\": {\"name\":{\"en\":\"class-one\"}},\n      \"l1_skill\": {\"name\":{\"en\":\"Addition\"}} ,\n      \"l2_skill\": [{\"name\":{\"en\":\"1-digit Addition\"}}] ,\n       \"l3_skill\": [{\"name\":{\"en\":\"2Dx1D with carry (non-zero digits)\"}}]\n    },\n    \"gradient\": \"g4\",\n    \"benchmark_time\":40,\n    \"sub_skills\": [\n      {\n        \"name\": {\n          \"en\": \"carry\"\n        }\n      }\n    ],\n    \"media\": [{\n      \"fileName\": \"Mcq_uplaod_image.png\",\n      \"mediaType\": \"Image\",\n      \"mimeType\": \"image/png\",\n      \"src\": \"media/content\"\n    },\n{\n      \"fileName\": \"Mcq_uplaod_image1.png\",\n      \"mediaType\": \"Image\",\n      \"mimeType\": \"image/png\",\n      \"src\": \"media/content\"\n    }\n],\n\n  \"question_body\": {\n            // \"options\": {\n            //     \"mcq_question_image\": \"image_url.jpg\"\n            // },\n            \"options\":[\"123\",\"345\",\"456\",\"\",\"\",\"\"],\n            \"correct_option\": \"Option A\",\n            \"wrong_answer\": [\n                {\n                    \"value\": [\n                        12,\n                        2\n                    ],\n                    \"subskillname\":\"carry\"\n                }\n            ]\n        }\n  }\n}\n",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question/create"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question", "create"]
+            }
           },
           "response": []
         },
@@ -307,7 +385,13 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "http://localhost:3001/api/v1/question/read/4e6f685f-6368-45e3-b62f-3ef3895e6b73"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question/read/4e6f685f-6368-45e3-b62f-3ef3895e6b73",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question", "read", "4e6f685f-6368-45e3-b62f-3ef3895e6b73"]
+            }
           },
           "response": []
         },
@@ -325,7 +409,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question/update/6e88f130-2541-42a9-98a1-490bd32ab312"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question/update/07149721-f1d1-4dc8-978a-641291274dde",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question", "update", "07149721-f1d1-4dc8-978a-641291274dde"]
+            }
           },
           "response": []
         },
@@ -334,7 +424,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/question/publish/4e6f685f-6368-45e3-b62f-3ef3895e6b73"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question/publish/4e6f685f-6368-45e3-b62f-3ef3895e6b73",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question", "publish", "4e6f685f-6368-45e3-b62f-3ef3895e6b73"]
+            }
           },
           "response": []
         },
@@ -343,7 +439,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/question/delete/3be3bf6c-2f0b-433a-a74f-78b51b10aa30"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question/delete/3be3bf6c-2f0b-433a-a74f-78b51b10aa30",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question", "delete", "3be3bf6c-2f0b-433a-a74f-78b51b10aa30"]
+            }
           },
           "response": []
         },
@@ -352,7 +454,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/question/discard/4e6f685f-6368-45e3-b62f-3ef3895e6b73"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question/discard/4e6f685f-6368-45e3-b62f-3ef3895e6b73",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question", "discard", "4e6f685f-6368-45e3-b62f-3ef3895e6b73"]
+            }
           },
           "response": []
         },
@@ -370,7 +478,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question/search"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question/search",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question", "search"]
+            }
           },
           "response": []
         }
@@ -393,7 +507,11 @@
                 }
               }
             },
-            "url": "{{AMLBASEURL}}/get/template"
+            "url": {
+              "raw": "{{AMLBASEURL}}/get/template",
+              "host": ["{{AMLBASEURL}}"],
+              "path": ["get", "template"]
+            }
           },
           "response": []
         },
@@ -411,7 +529,11 @@
                 }
               }
             },
-            "url": "{{AMLBASEURL}}/bulk/upload/url"
+            "url": {
+              "raw": "{{AMLBASEURL}}/bulk/upload/url",
+              "host": ["{{AMLBASEURL}}"],
+              "path": ["bulk", "upload", "url"]
+            }
           },
           "response": []
         },
@@ -420,7 +542,11 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{AMLBASEURL}}/bulk/upload/status/4206d2e7-7efc-4f7c-a342-370aa165ccae"
+            "url": {
+              "raw": "{{AMLBASEURL}}/bulk/upload/status/4206d2e7-7efc-4f7c-a342-370aa165ccae",
+              "host": ["{{AMLBASEURL}}"],
+              "path": ["bulk", "upload", "status", "4206d2e7-7efc-4f7c-a342-370aa165ccae"]
+            }
           },
           "response": []
         }
@@ -443,7 +569,11 @@
                 }
               }
             },
-            "url": "{{AMLBASEURL}}/media/upload/presigned-url"
+            "url": {
+              "raw": "{{AMLBASEURL}}/media/upload/presigned-url",
+              "host": ["{{AMLBASEURL}}"],
+              "path": ["media", "upload", "presigned-url"]
+            }
           },
           "response": []
         },
@@ -461,7 +591,11 @@
                 }
               }
             },
-            "url": "{{AMLBASEURL}}/media/read/presigned-url"
+            "url": {
+              "raw": "{{AMLBASEURL}}/media/read/presigned-url",
+              "host": ["{{AMLBASEURL}}"],
+              "path": ["media", "read", "presigned-url"]
+            }
           },
           "response": []
         },
@@ -479,7 +613,11 @@
                 }
               }
             },
-            "url": "{{AMLBASEURL}}/content/media/read/presigned-url"
+            "url": {
+              "raw": "{{AMLBASEURL}}/content/media/read/presigned-url",
+              "host": ["{{AMLBASEURL}}"],
+              "path": ["content", "media", "read", "presigned-url"]
+            }
           },
           "response": []
         }
@@ -495,14 +633,20 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"api.questionSet.create\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-13T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"b68dc3a5-f37f-4d69-b4f3-555408c2fab2\"\n  },\n  \"request\": {\n    \"title\": {\n      \"en\": \"Question Set 1\"\n    },\n    \"description\": {\n      \"en\": \"This is a question description\"\n    },\n    \"tenant\": {\n      \"name\": {\n        \"en\": \"Karnataka\"\n      }\n    },\n    \"repository\": {\n      \"name\": {\n        \"en\": \"Question Repository\"\n      }\n    },\n    \"sequence\": 1,\n    \"taxonomy\": {\n      \"board\": {\n        \"name\": {\n          \"en\": \"Central Board of Secondary Education\"\n        }\n      },\n      \"class\": {\n        \"name\": {\n          \"en\": \"one\"\n        }\n      },\n      \"l1_skill\": {\n        \"name\": {\n          \"en\": \"Addition\"\n        }\n      },\n      \"l2_skill\": [\n        {\n          \"name\": {\n            \"en\": \"1-digit Addition\"\n          }\n        }\n      ],\n      \"l3_skill\": [\n        {\n          \"name\": {\n            \"en\": \"2Dx1D with carry (non-zero digits)\"\n          }\n        }\n      ]\n    },\n    \"sub_skills\": [\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics\"\n        }\n      }\n    ],\n    \"content_id\":[\"b68dc3a5-f37f-4d69-b4f3-555408c2fab8\"],\n    \"purpose\": \"Practice\",\n    \"is_atomic\": false,\n    \"gradient\": \"g1\",\n    \"group_name\": 1,\n    \"instruction_text\": \"text\"\n  }\n}",
+              "raw": "{\n  \"id\": \"api.questionSet.create\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-13T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"b68dc3a5-f37f-4d69-b4f3-555408c2fab2\"\n  },\n  \"request\": {\n    \"title\": {\n      \"en\": \"Question Set 1\"\n    },\n    \"description\": {\n      \"en\": \"This is a question description\"\n    },\n    \"tenant\": {\n      \"name\": {\n        \"en\": \"Karnataka\"\n      }\n    },\n    \"repository\": {\n      \"name\": {\n        \"en\": \"Question Repository\"\n      }\n    },\n    \"questions\":[{\"identifier\":\"a6d437ce-85b3-4880-9481-4f5e588c0d56\", \"sequence\":1}],\n    \"sequence\": 1,\n    \"taxonomy\": {\n      \"board\": {\n        \"name\": {\n               \"en\": \"Karnataka\"\n        }\n      },\n      \"class\": {\n        \"name\": {\n          \"en\": \"one\"\n        }\n      },\n      \"l1_skill\": {\n        \"name\": {\n          \"en\": \"Addition\"\n        }\n      },\n      \"l2_skill\": [\n        {\n          \"name\": {\n            \"en\": \"1-digit Addition\"\n          }\n        }\n      ],\n      \"l3_skill\": [\n        {\n          \"name\": {\n            \"en\": \"2Dx1D with carry (non-zero digits)\"\n          }\n        }\n      ]\n    },\n    \"sub_skills\": [\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics\"\n        }\n      }\n    ],\n    \"content_ids\":[\"b68dc3a5-f37f-4d69-b4f3-555408c2fab8\"],\n    \"purpose\": \"Practice\",\n    \"is_atomic\": false,\n    \"gradient\": \"g1\",\n    \"group_name\": 1,\n    \"instruction_text\": \"text\"\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question-set/create"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question-set/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question-set", "create"]
+            }
           },
           "response": []
         },
@@ -511,7 +655,13 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "http://localhost:3001/api/v1/question-set/read/b68dc3a5-f37f-4d69-b4f3-555408c2fab2"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question-set/read/ea467d5b-2256-4036-8a36-346fd6192353",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question-set", "read", "ea467d5b-2256-4036-8a36-346fd6192353"]
+            }
           },
           "response": []
         },
@@ -522,14 +672,20 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"api.questionSet.update\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-13T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"b68dc3a5-f37f-4d69-b4f3-555408c2fab2\"\n  },\n  \"request\": {\n    \"title\": {\n      \"en\": \"Question Set 2\"\n    },\n    \"description\": {\n      \"en\": \"This is a question description1\"\n    },\n\n    \"tenant\": {\n      \"name\": {\n        \"en\": \"Karnataka\"\n      }\n    },\n    \"repository\": {\n      \"name\": {\n        \"en\": \"Question Repository\"\n      }\n    },\n    \"sequence\": 1,\n    \"taxonomy\": {\n      \"board\": {\n        \"name\": {\n          \"en\": \"Central Board of Secondary Education\"\n        }\n      },\n      \"class\": {\n        \"name\": {\n          \"en\": \"Class One\"\n        }\n      },\n      \"l1_skill\": {\n        \"name\": {\n          \"en\": \"Addition\"\n        }\n      },\n      \"l2_skill\": [\n        {\n          \"name\": {\n            \"en\": \"2-digit Addition\"\n          }\n        }\n      ]\n    },\n    \"sub_skills\": [\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics\"\n        }\n      }\n    ],\n    \"purpose\": \"Practice\",\n    \"is_atomic\": false,\n    \"gradient\": \"g2\",\n    \"group_name\": 1,\n    \"instruction_text\": \"text\"\n  }\n}",
+              "raw": "{\n  \"id\": \"api.questionSet.update\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-13T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"b68dc3a5-f37f-4d69-b4f3-555408c2fab2\"\n  },\n  \"request\": {\n    \"title\": {\n      \"en\": \"Question Set 2\"\n    },\n    \"description\": {\n      \"en\": \"This is a question description1\"\n    },\n  \"questions\":[{\"identifier\":\"a6d437ce-85b3-4880-9481-4f5e588c0d56\", \"sequence\":3}, {\"identifier\":\"8603bdec-1df7-4911-b5e1-28a333e59027\", \"sequence\":2},{\"identifier\":\"2e90f1d6-ea0b-4f9d-aaba-dc16b56e9ad3\", \"sequence\":1} ],\n\n    \"tenant\": {\n      \"name\": {\n        \"en\": \"Karnataka\"\n      }\n    },\n    \"repository\": {\n      \"name\": {\n        \"en\": \"Question Repository\"\n      }\n    },\n    \"sequence\": 1,\n    \"taxonomy\": {\n      \"board\": {\n        \"name\": {\n          \"en\": \"Central Board of Secondary Education\"\n        }\n      },\n      \"class\": {\n        \"name\": {\n          \"en\": \"Class One\"\n        }\n      },\n      \"l1_skill\": {\n        \"name\": {\n          \"en\": \"Addition\"\n        }\n      },\n      \"l2_skill\": [\n        {\n          \"name\": {\n            \"en\": \"2-digit Addition\"\n          }\n        }\n      ]\n    },\n    \"sub_skills\": [\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics\"\n        }\n      }\n    ],\n    \"purpose\": \"Practice\",\n    \"is_atomic\": false,\n    \"gradient\": \"g2\",\n    \"group_name\": 1,\n    \"instruction_text\": \"text\"\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question-set/update/b68dc3a5-f37f-4d69-b4f3-555408c2fab2"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question-set/update/ea467d5b-2256-4036-8a36-346fd6192353",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question-set", "update", "ea467d5b-2256-4036-8a36-346fd6192353"]
+            }
           },
           "response": []
         },
@@ -547,7 +703,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question-set/publish/9211fa9f-df60-4251-9d19-03f0eb7db9b2"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question-set/publish/9211fa9f-df60-4251-9d19-03f0eb7db9b2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question-set", "publish", "9211fa9f-df60-4251-9d19-03f0eb7db9b2"]
+            }
           },
           "response": []
         },
@@ -565,7 +727,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question-set/delete/9211fa9f-df60-4251-9d19-03f0eb7db9b2"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question-set/delete/9211fa9f-df60-4251-9d19-03f0eb7db9b2",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question-set", "delete", "9211fa9f-df60-4251-9d19-03f0eb7db9b2"]
+            }
           },
           "response": []
         },
@@ -583,7 +751,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question-set/discard/04577841-e5c1-4660-a4e5-1e720d161bc9"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question-set/discard/04577841-e5c1-4660-a4e5-1e720d161bc9",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question-set", "discard", "04577841-e5c1-4660-a4e5-1e720d161bc9"]
+            }
           },
           "response": []
         },
@@ -601,7 +775,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/question-set/search"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/question-set/search",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "question-set", "search"]
+            }
           },
           "response": []
         }
@@ -617,14 +797,20 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": \"api.content.create\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-13T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"123e4567-e89b-12d3-a456-426614174000\"\n  },\n  \"request\": {\n    \"name\": {\n      \"en\": \"content 1\"\n    },\n    \"description\": {\n      \"en\": \"This is the description for the content\"\n    },\n    \"tenant\": {\n      \"name\": {\n        \"en\": \"Karnataka\"\n      }\n    },\n    \"repository\": {\n      \"name\": {\n        \"en\": \"Question Repository\"\n      }\n    },\n    \"taxonomy\": {\n      \"board\": {\n        \"name\": {\n          \"en\": \"Central Board of Secondary Education\"\n        }\n      },\n      \"class\": {\n        \"name\": {\n          \"en\": \"one\"\n        }\n      },\n      \"l1_skill\": {\n        \"name\": {\n          \"en\": \"Addition\"\n        }\n      },\n      \"l2_skill\": [\n        {\n          \"name\": {\n            \"en\": \"1-digit Addition\"\n          }\n        }\n      ],\n      \"l3_skill\": [\n        {\n          \"name\": {\n            \"en\": \"2Dx1D with carry (non-zero digits)\"\n          }\n        }\n      ]\n    },\n    \"sub_skills\": [\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics\"\n        }\n      }\n    ],\n    \"gradient\": \"g4\",\n    \"media\": [\n      {\n        \"fileName\": \"Mcq_uplaod_image.png\",\n        \"mediaType\": \"Image\",\n        \"mimeType\": \"image/png\",\n        \"src\": \"media/content\"\n      },\n      {\n        \"fileName\": \"Mcq_uplaod_image1.png\",\n        \"mediaType\": \"Image\",\n        \"mimeType\": \"image/png\",\n        \"src\": \"media/content\"\n      }\n    ]\n  }\n}",
+              "raw": "{\n  \"id\": \"api.content.create\",\n  \"ver\": \"1.0\",\n  \"ts\": \"2024-09-13T12:00:00Z\",\n  \"params\": {\n    \"msgid\": \"123e4567-e89b-12d3-a456-426614174000\"\n  },\n  \"request\": {\n    \"name\": {\n      \"en\": \"content 3\"\n    },\n    \"description\": {\n      \"en\": \"This is the description for the content\"\n    },\n    \"tenant\": {\n      \"name\": {\n        \"en\": \"Karnataka\"\n      }\n    },\n    \"repository\": {\n      \"name\": {\n        \"en\": \"Question Repository\"\n      }\n    },\n    \"taxonomy\": {\n      \"board\": {\n        \"name\": {\n          \"en\": \"Central Board of Secondary Education\"\n        }\n      },\n      \"class\": {\n        \"name\": {\n          \"en\": \"one\"\n        }\n      },\n      \"l1_skill\": {\n        \"name\": {\n          \"en\": \"Addition\"\n        }\n      },\n      \"l2_skill\": [\n        {\n          \"name\": {\n            \"en\": \"1-digit Addition\"\n          }\n        }\n      ],\n      \"l3_skill\": [\n        {\n          \"name\": {\n            \"en\": \"2Dx1D with carry (non-zero digits)\"\n          }\n        }\n      ]\n    },\n    \"sub_skills\": [\n      {\n        \"name\": {\n          \"en\": \"Geometry Basics\"\n        }\n      }\n    ],\n    \"gradient\": \"g4\",\n    \"media\": [\n      {\n        \"fileName\": \"Mcq_uplaod_image.png\",\n        \"mediaType\": \"Image\",\n        \"mimeType\": \"image/png\",\n        \"src\": \"media/content\"\n      },\n      {\n        \"fileName\": \"Mcq_uplaod_image1.png\",\n        \"mediaType\": \"Image\",\n        \"mimeType\": \"image/png\",\n        \"src\": \"media/content\"\n      }\n    ]\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/content/create"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/content/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "content", "create"]
+            }
           },
           "response": []
         },
@@ -642,7 +828,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/content/update/bada12a2-de6d-4458-9a3c-340203241912"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/content/update/bada12a2-de6d-4458-9a3c-340203241912",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "content", "update", "bada12a2-de6d-4458-9a3c-340203241912"]
+            }
           },
           "response": []
         },
@@ -651,7 +843,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/content/publish/bada12a2-de6d-4458-9a3c-340203241912"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/content/publish/bada12a2-de6d-4458-9a3c-340203241912",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "content", "publish", "bada12a2-de6d-4458-9a3c-340203241912"]
+            }
           },
           "response": []
         },
@@ -660,7 +858,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/content/discard/bada12a2-de6d-4458-9a3c-340203241912"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/content/discard/bada12a2-de6d-4458-9a3c-340203241912",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "content", "discard", "bada12a2-de6d-4458-9a3c-340203241912"]
+            }
           },
           "response": []
         },
@@ -669,7 +873,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/content/delete/bada12a2-de6d-4458-9a3c-340203241912"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/content/delete/bada12a2-de6d-4458-9a3c-340203241912",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "content", "delete", "bada12a2-de6d-4458-9a3c-340203241912"]
+            }
           },
           "response": []
         },
@@ -678,7 +888,13 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "http://localhost:3001/api/v1/content/read/93063adf-a273-46b0-b49d-64af6920cc7f"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/content/read/93063adf-a273-46b0-b49d-64af6920cc7f",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "content", "read", "93063adf-a273-46b0-b49d-64af6920cc7f"]
+            }
           },
           "response": []
         },
@@ -696,7 +912,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/content/search"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/content/search",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "content", "search"]
+            }
           },
           "response": []
         }
@@ -719,7 +941,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/repository/create"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/repository/create",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "repository", "create"]
+            }
           },
           "response": []
         },
@@ -737,7 +965,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/repository/update/4d43c58c-8232-4ea4-8ae5-4a2732bab1be"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/repository/update/4d43c58c-8232-4ea4-8ae5-4a2732bab1be",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "repository", "update", "4d43c58c-8232-4ea4-8ae5-4a2732bab1be"]
+            }
           },
           "response": []
         },
@@ -746,7 +980,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/repository/publish/4d43c58c-8232-4ea4-8ae5-4a2732bab1be"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/repository/publish/4d43c58c-8232-4ea4-8ae5-4a2732bab1be",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "repository", "publish", "4d43c58c-8232-4ea4-8ae5-4a2732bab1be"]
+            }
           },
           "response": []
         },
@@ -755,7 +995,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/repository/delete/4d43c58c-8232-4ea4-8ae5-4a2732bab1be"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/repository/delete/4d43c58c-8232-4ea4-8ae5-4a2732bab1be",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "repository", "delete", "4d43c58c-8232-4ea4-8ae5-4a2732bab1be"]
+            }
           },
           "response": []
         },
@@ -764,7 +1010,13 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "http://localhost:3001/api/v1/repository/discard/4d43c58c-8232-4ea4-8ae5-4a2732bab1be"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/repository/discard/4d43c58c-8232-4ea4-8ae5-4a2732bab1be",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "repository", "discard", "4d43c58c-8232-4ea4-8ae5-4a2732bab1be"]
+            }
           },
           "response": []
         },
@@ -773,7 +1025,13 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "http://localhost:3001/api/v1/repository/read/4d43c58c-8232-4ea4-8ae5-4a2732bab1be"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/repository/read/4d43c58c-8232-4ea4-8ae5-4a2732bab1be",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "repository", "read", "4d43c58c-8232-4ea4-8ae5-4a2732bab1be"]
+            }
           },
           "response": []
         },
@@ -791,7 +1049,13 @@
                 }
               }
             },
-            "url": "http://localhost:3001/api/v1/repository/search"
+            "url": {
+              "raw": "http://localhost:3001/api/v1/repository/search",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3001",
+              "path": ["api", "v1", "repository", "search"]
+            }
           },
           "response": []
         }

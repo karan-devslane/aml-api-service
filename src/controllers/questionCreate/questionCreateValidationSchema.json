@@ -24,9 +24,6 @@
     "request": {
       "type": "object",
       "properties": {
-        "question_set_id": {
-          "type": "string"
-        },
         "question_type": {
           "type": "string",
           "enum": ["Grid-1", "Mcq", "Fib", "Grid-2"]
@@ -46,9 +43,6 @@
           "additionalProperties": {
             "type": "string"
           }
-        },
-        "sequence_no": {
-          "type": "integer"
         },
         "hints": {
           "type": "object",
@@ -212,10 +206,11 @@
         "question_body": {
           "type": "object",
           "properties": {
-            "options": { "type": "object" },
+            "numbers": { "type": "object" },
+            "options": { "type": "array" },
             "correct_option": { "type": "string" },
-            "answer": { "type": "object" },
-            "wrongAnswers": { "type": "array" }
+            "answers": { "type": "object" },
+            "wrong_answer": { "type": "array" }
           },
           "additionalProperties": false
         },
@@ -223,7 +218,7 @@
           "type": "integer"
         }
       },
-      "required": ["question_set_id", "question_type", "taxonomy", "question_body", "benchmark_time"],
+      "required": ["question_type", "taxonomy", "question_body", "benchmark_time"],
       "if": {
         "properties": {
           "question_type": { "const": "Mcq" }
@@ -234,24 +229,30 @@
           "question_body": {
             "type": "object",
             "properties": {
+              "numbers": {
+                "type": "object"
+              },
               "options": {
-                "type": "object",
-                "properties": {
-                  "mcq_question_image": { "type": "string" },
-                  "mcq_option_1": { "type": "string" },
-                  "mcq_option_2": { "type": "string" },
-                  "mcq_option_3": { "type": "string" },
-                  "mcq_option_4": { "type": "string" },
-                  "mcq_option_5": { "type": "string" },
-                  "mcq_option_6": { "type": "string" }
-                }
+                "type": "array",
+                "items": { "type": "string" }
               },
               "correct_option": {
                 "type": "string"
               },
-              "wrongAnswers": {
+              "wrong_answer": {
                 "type": "array",
-                "items": { "type": "object" }
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "items": { "type": "integer" }
+                    },
+                    "subskillname": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             },
             "required": ["options", "correct_option"],
@@ -273,8 +274,8 @@
                 "numbers": {
                   "type": "object",
                   "properties": {
-                    "n1": { "type": "integer" },
-                    "n2": { "type": "integer" }
+                    "n1": { "type": "string" },
+                    "n2": { "type": "string" }
                   }
                 },
                 "answers": {
@@ -283,12 +284,24 @@
                     "result": { "type": "integer" }
                   }
                 },
-                "wrongAnswers": {
+                "wrong_answer": {
                   "type": "array",
-                  "items": { "type": "object" }
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "array",
+                        "items": { "type": "integer" }
+                      },
+                      "subskillname": {
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
               },
-              "required": ["numbers", "answer", "wrongAnswers"]
+              "required": ["numbers", "answer"],
+              "additionalProperties": false
             }
           }
         },
@@ -306,22 +319,28 @@
                   "numbers": {
                     "type": "object",
                     "properties": {
-                      "n1": { "type": "integer" },
-                      "n2": { "type": "integer" }
+                      "n1": { "type": "string" },
+                      "n2": { "type": "string" }
                     }
                   },
-                  "answers": {
-                    "type": "object",
-                    "properties": {
-                      "result": { "type": "integer" }
-                    }
-                  },
-                  "wrongAnswers": {
+                  "wrong_answer": {
                     "type": "array",
-                    "items": { "type": "object" }
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "array",
+                          "items": { "type": "integer" }
+                        },
+                        "subskillname": {
+                          "type": "string"
+                        }
+                      }
+                    }
                   }
                 },
-                "required": ["numbers", "answer", "wrongAnswers"]
+                "required": ["numbers"],
+                "additionalProperties": false
               }
             }
           },
@@ -339,22 +358,37 @@
                     "numbers": {
                       "type": "object",
                       "properties": {
-                        "n1": { "type": "integer" },
-                        "n2": { "type": "integer" }
+                        "n1": { "type": "string" },
+                        "n2": { "type": "string" }
                       }
                     },
                     "answers": {
                       "type": "object",
                       "properties": {
-                        "result": { "type": "integer" }
+                        "result": { "type": "integer" },
+                        "isPrefil": { "type": "boolean" },
+                        "answerTop": { "type": "string" },
+                        "answerResult": { "type": "string" }
                       }
                     },
-                    "wrongAnswers": {
+                    "wrong_answer": {
                       "type": "array",
-                      "items": { "type": "object" }
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "array",
+                            "items": { "type": "integer" }
+                          },
+                          "subskillname": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   },
-                  "required": ["numbers", "answer", "wrongAnswers"]
+                  "required": ["numbers", "answer"],
+                  "additionalProperties": false
                 }
               }
             }

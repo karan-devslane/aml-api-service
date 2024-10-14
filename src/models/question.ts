@@ -17,17 +17,16 @@ interface Taxonomy {
 }
 
 interface QuestionBody {
+  numbers: { n1: number | null; n2: number | null }; // Correct union type syntax
   options: { [key: string]: any }; // Use 'any' if options can have varied structures
   correct_option: string; // This holds the correct answer option
-  answer: { [key: string]: any }; // Dynamic structure for the answer
-  wrongAnswers: string[]; // Array of wrong answer strings
+  answers: { [key: string]: any }; // Dynamic structure for the answer
+  wrong_answer: { value: number[]; subskillname: string }[]; // Array of objects with 'value' and 'subskillname'
 }
 
 export class Question extends Model {
   declare id: number;
   declare identifier: string;
-  declare process_id?: string | null;
-  declare question_set_id?: string | null;
   declare benchmark_time: number;
   declare question_type: string;
   declare operation: string;
@@ -58,14 +57,6 @@ Question.init(
     identifier: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    process_id: {
-      type: DataTypes.UUID,
-      allowNull: true,
-    },
-    question_set_id: {
-      type: DataTypes.STRING,
-      allowNull: true,
     },
     benchmark_time: {
       type: DataTypes.INTEGER,
