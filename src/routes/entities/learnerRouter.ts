@@ -12,6 +12,6 @@ learnerRouter.use('/journey', learnerJourneyRouter);
 
 learnerRouter.use('/proficiency-data', learnerProficiencyRouter);
 
-learnerRouter.get('/evaluate/:learner_id', evaluateLearner);
+learnerRouter.get('/evaluate/:learner_id', learnerAuth, evaluateLearner);
 
 learnerRouter.get('/read', setDataToRequestObject('api.learner.read'), learnerAuth, fetchLoggedInLearner);
