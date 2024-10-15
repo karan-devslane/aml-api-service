@@ -3,13 +3,21 @@ import * as _ from 'lodash';
 import httpStatus from 'http-status';
 import { ResponseHandler } from '../../../utils/responseHandler';
 import { readLearnerJourney } from '../../../services/learnerJourney';
+import logger from '../../../utils/logger';
+import { amlError } from '../../../types/amlError';
 
-export const apiId = 'api.learner.journey.read';
+const apiId = 'api.learner.journey.read';
 
 const learnerJourneyRead = async (req: Request, res: Response) => {
   const learner_id = _.get(req, 'params.learner_id');
 
-  // TODO: validate learner_id
+  const learner = (req as any).learner;
+
+  if (learner.identifier !== learner_id) {
+    const code = 'LEARNER_DOES_NOT_EXIST';
+    logger.error({ code, apiId, message: 'Learner does not exist' });
+    throw amlError(code, 'Learner does not exist', 'NOT_FOUND', 404);
+  }
 
   const { learnerJourney } = await readLearnerJourney(learner_id);
 
