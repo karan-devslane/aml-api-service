@@ -15,6 +15,7 @@ const logout = (req: Request, res: Response) => {
       logger.error({ code, apiId, message: message });
       throw amlError(code, message, 'SERVER_ERROR', 500);
     }
+    res.clearCookie('connect.sid');
     ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Logout successful' } });
   });
 };
