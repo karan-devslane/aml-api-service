@@ -49,6 +49,7 @@ const login = async (req: Request, res: Response) => {
   const result = {
     username: learner.username,
     identifier: learner.identifier,
+    taxonomy: learner.taxonomy,
   };
 
   ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Login successful', data: result } });
