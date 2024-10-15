@@ -8,6 +8,7 @@ export interface IConfiguration {
     zippedArchive: boolean;
   };
   envPort: number;
+  appSecret: string;
   applicationEnv: string;
   appVersion: string;
   DB: {
