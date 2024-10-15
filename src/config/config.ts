@@ -15,6 +15,7 @@ const appConfiguration: IConfiguration = {
   appSecret: get(envVars, 'AML_SERVICE_APP_SECRET', 'something'),
   applicationEnv: get(envVars, 'AML_SERVICE_APPLICATION_ENV', 'development'),
   appVersion: get(envVars, 'AML_SERVICE_APP_VERSION', '1.0'),
+  whitelistedOrigins: get(envVars, 'AML_SERVICE_WHITELISTED_ORIGINS', ''),
   DB: {
     host: get(envVars, 'AML_SERVICE_DB_HOST', 'localhost'),
     port: get(envVars, 'AML_SERVICE_DB_PORT', 5432) as number,

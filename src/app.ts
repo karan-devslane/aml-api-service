@@ -55,9 +55,10 @@ const initializeServer = (): void => {
     app.use(express.urlencoded({ extended: true }));
 
     // Middleware to enable CORS
+    const origins = appConfiguration.whitelistedOrigins.split(',');
     app.use(
       cors({
-        origin: 'http://localhost:5173', // React app origin
+        origin: origins, // React app origin
         credentials: true,
       }),
     );

@@ -11,6 +11,7 @@ export interface IConfiguration {
   appSecret: string;
   applicationEnv: string;
   appVersion: string;
+  whitelistedOrigins: string;
   DB: {
     port: number;
     host: string;
