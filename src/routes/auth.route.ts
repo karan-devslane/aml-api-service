@@ -3,6 +3,7 @@ import { setDataToRequestObject } from '../middlewares/setDataToReqObj';
 import login from '../controllers/auth/login/login';
 import { learnerAuth } from '../middlewares/learnerAuth';
 import logout from '../controllers/auth/logout/logout';
+import fetchMe from '../controllers/auth/me/fetchMe';
 
 export const authRouter = express.Router();
 
@@ -23,3 +24,5 @@ authRouter.get('/csrf-token', setDataToRequestObject('api.auth.csrf'), (req, res
 authRouter.post('/login', setDataToRequestObject('api.auth.login'), login);
 
 authRouter.post('/logout', setDataToRequestObject('api.auth.logout'), learnerAuth, logout);
+
+authRouter.get('/me', setDataToRequestObject('api.auth.fetchMe'), learnerAuth, fetchMe);
