@@ -174,14 +174,14 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
         await createLearnerJourney({
           learner_id,
           question_set_id: questionSet.identifier,
-          status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETE : LearnerJourneyStatus.IN_PROGRESS,
+          status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
           completed_question_ids: completedQuestionIds,
           start_time: attemptedQuestions?.[0]?.created_at.toString(),
           end_time: allQuestionsHaveEqualNumberOfAttempts ? attemptedQuestions?.pop()?.created_at.toString() : null,
         });
       } else {
         await updateLearnerJourney(learnerJourney.identifier, {
-          status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETE : LearnerJourneyStatus.IN_PROGRESS,
+          status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
           completed_question_ids: completedQuestionIds,
           start_time: attemptedQuestions?.[0]?.created_at?.toString(),
           end_time: allQuestionsHaveEqualNumberOfAttempts ? attemptedQuestions?.pop()?.created_at?.toString() : null,

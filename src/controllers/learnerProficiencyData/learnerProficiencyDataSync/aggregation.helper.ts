@@ -6,7 +6,7 @@ import { QuestionType } from '../../../enums/questionType';
 
 export const getScoreForTheQuestion = (question: Question, learnerResponse: { result: string; answerTop?: string }): number => {
   const { question_type, question_body } = question;
-  const { answer, correct_option, numbers } = question_body;
+  const { answers, correct_option, numbers } = question_body;
   const { result, answerTop } = learnerResponse;
 
   let score = 0;
@@ -14,8 +14,8 @@ export const getScoreForTheQuestion = (question: Question, learnerResponse: { re
   switch (question_type) {
     case QuestionType.GRID_1:
     case QuestionType.FIB: {
-      if (answer && answer.result) {
-        const { result } = answer;
+      if (answers && answers.result) {
+        const { result } = answers;
         if (result.toString() === result) {
           score = 1;
         }
@@ -29,8 +29,9 @@ export const getScoreForTheQuestion = (question: Question, learnerResponse: { re
       break;
     }
     case QuestionType.GRID_2: {
-      if (numbers && numbers.n1 && numbers.n2) {
-        if ((numbers.n1 === answerTop && numbers.n2 === result) || (numbers.n2 === answerTop && numbers.n1 === result)) {
+      const { n1, n2 } = numbers;
+      if (numbers && n1 && n2) {
+        if ((n1.toString() === answerTop && n2.toString() === result) || (n2.toString() === answerTop && n1.toString() === result)) {
           score = 1;
         }
       }
