@@ -15,7 +15,7 @@ import { boardMaster } from '../../../models/boardMaster';
 import { classMaster } from '../../../models/classMaster';
 import { fetchSkillsByIds } from '../../../services/skill';
 
-const getLearnerNextStep = async (req: Request, res: Response) => {
+const evaluateLearner = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
   const learner_id = _.get(req, 'params.learner_id');
   const msgid = _.get(req, ['body', 'params', 'msgid']);
@@ -138,4 +138,4 @@ const getLearnerNextStep = async (req: Request, res: Response) => {
   });
 };
 
-export default getLearnerNextStep;
+export default evaluateLearner;

@@ -50,6 +50,12 @@
                   }
                 },
                 "required": ["result"]
+              },
+              "start_time": {
+                "type": "string"
+              },
+              "end_time": {
+                "type": "string"
               }
             },
             "required": ["question_id", "learner_response", "question_set_id"],
