@@ -47,6 +47,7 @@ import repositoryUpdate from '../controllers/repositoryUpdate/repositoryUpdate';
 import deleteRepositoryById from '../controllers/repositoryDelete/repositoryDelete';
 import discardRepositoryById from '../controllers/repositoryDiscard/repositoryDiscard';
 import { searchRepositories } from '../controllers/repositorySearch/repositorySearch';
+import { authRouter } from './auth.route';
 
 export const router = express.Router();
 
@@ -143,3 +144,11 @@ router.post('/repository/delete/:repository_id', setDataToRequestObject('api.rep
 router.post('/repository/discard/:repository_id', setDataToRequestObject('api.repository.discard'), discardRepositoryById);
 
 router.post('/repository/search', setDataToRequestObject('api.repository.search'), searchRepositories);
+
+router.use('/auth', authRouter);
+
+router.all('*', (_, res) => {
+  res.status(404).json({
+    message: "Endpoint doesn't exist",
+  });
+});

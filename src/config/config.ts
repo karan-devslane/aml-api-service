@@ -12,8 +12,10 @@ const appConfiguration: IConfiguration = {
     zippedArchive: isEqual(get(envVars, 'LOG_FILE_ZIP_ARCHIVE', 'false'), 'true'),
   },
   envPort: get(envVars, 'AML_SERVICE_APPLICATION_PORT', 4000) as number,
+  appSecret: get(envVars, 'AML_SERVICE_APP_SECRET', 'something'),
   applicationEnv: get(envVars, 'AML_SERVICE_APPLICATION_ENV', 'development'),
   appVersion: get(envVars, 'AML_SERVICE_APP_VERSION', '1.0'),
+  whitelistedOrigins: get(envVars, 'AML_SERVICE_WHITELISTED_ORIGINS', ''),
   DB: {
     host: get(envVars, 'AML_SERVICE_DB_HOST', 'localhost'),
     port: get(envVars, 'AML_SERVICE_DB_PORT', 5432) as number,
