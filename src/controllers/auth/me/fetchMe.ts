@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
-import * as _ from 'lodash';
 import { ResponseHandler } from '../../../utils/responseHandler';
 import httpStatus from 'http-status';
 
 const fetchMe = (req: Request, res: Response) => {
-  const learner = _.get(req, 'learner');
+  const learner = (req as any).learner;
 
   const result = {
     username: learner!.username,

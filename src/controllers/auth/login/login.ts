@@ -46,7 +46,7 @@ const login = async (req: Request, res: Response) => {
 
   _.set(req, ['session', 'learnerId'], learner.identifier);
 
-  ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Login successful', data: { learner_id: learner.identifier } } });
+  ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Login successful', data: { identifier: learner.identifier } } });
 };
 
 export default login;
