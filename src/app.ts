@@ -56,12 +56,14 @@ const initializeServer = (): void => {
 
     // Middleware to enable CORS
     const origins = appConfiguration.whitelistedOrigins.split(',');
-    app.use(
-      cors({
-        origin: origins, // React app origin
-        credentials: true,
-      }),
-    );
+    if (origins.length) {
+      app.use(
+        cors({
+          origin: origins, // React app origin
+          credentials: true,
+        }),
+      );
+    }
 
     // Enable CORS preflight for all routes
     app.options(/.*/, cors());
