@@ -1,6 +1,7 @@
 import { QueryInterface, DataTypes } from 'sequelize';
+import { LearnerJourneyStatus } from '../enums/learnerJourneyStatus';
 
-const tableName = 'learner_proficiency_question_level_data';
+const tableName = 'learner_journey';
 
 export = {
   /**
@@ -25,29 +26,26 @@ export = {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      question_id: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
       question_set_id: {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      taxonomy: {
+      completed_question_ids: {
         allowNull: true,
         type: DataTypes.JSONB,
       },
-      sub_skills: {
+      status: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        defaultValue: LearnerJourneyStatus.IN_PROGRESS,
+      },
+      start_time: {
+        allowNull: false,
+        type: DataTypes.DATE,
+      },
+      end_time: {
         allowNull: true,
-        type: DataTypes.JSONB,
-      },
-      learner_response: {
-        allowNull: false,
-        type: DataTypes.JSONB,
-      },
-      score: {
-        allowNull: false,
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DATE,
       },
       attempts_count: {
         allowNull: false,

@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { AppDataSource } from '../config';
+import { QuestionType } from '../enums/questionType';
 
 // Define interfaces for the structures used in the Question model
 interface Repository {
@@ -28,7 +29,7 @@ export class Question extends Model {
   declare id: number;
   declare identifier: string;
   declare benchmark_time: number;
-  declare question_type: string;
+  declare question_type: QuestionType;
   declare operation: string;
   declare name: { [key: string]: string };
   declare description?: { [key: string]: string } | null;
@@ -39,7 +40,7 @@ export class Question extends Model {
   declare hints?: { [key: string]: string } | null;
   declare status: 'draft' | 'live';
   declare media?: Array<{ src: string; fileName: string; mimeType: string; mediaType: string }> | null;
-  declare question_body: QuestionBody | null;
+  declare question_body: QuestionBody;
   declare sub_skills?: Array<{ id: number; name: { [key: string]: string } }> | null;
   declare created_by: string;
   declare updated_by?: string | null;

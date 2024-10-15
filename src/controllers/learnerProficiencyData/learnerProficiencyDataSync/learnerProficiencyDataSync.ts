@@ -7,14 +7,14 @@ import logger from '../../../utils/logger';
 import { ResponseHandler } from '../../../utils/responseHandler';
 import { amlError } from '../../../types/amlError';
 import {
-  getQuestionLevelDataByLearnerIdAndQuestionId,
   createLearnerProficiencyQuestionLevelData,
-  updateLearnerProficiencyQuestionLevelData,
-  getRecordsForLearnerByQuestionSetId,
   createLearnerProficiencyQuestionSetLevelData,
-  getQuestionSetLevelDataByLearnerIdAndQuestionSetId,
-  updateLearnerProficiencyQuestionSetLevelData,
+  getQuestionLevelDataByLearnerIdAndQuestionId,
   getQuestionLevelDataRecordsForLearner,
+  getQuestionSetLevelDataByLearnerIdAndQuestionSetId,
+  getRecordsForLearnerByQuestionSetId,
+  updateLearnerProficiencyQuestionLevelData,
+  updateLearnerProficiencyQuestionSetLevelData,
 } from '../../../services/learnerProficiencyData';
 import { getQuestionSetsByIdentifiers } from '../../../services/questionSet';
 import { getQuestionsByIdentifiers, getQuestionsCountForQuestionSet } from '../../../services/question';
@@ -25,7 +25,11 @@ import {
   calculateSubSkillScoresForQuestion,
   calculateSubSkillScoresForQuestionSet,
   getAggregateDataForGivenTaxonomyKey,
+  getScoreForTheQuestion,
 } from './aggregation.helper';
+import { createLearnerJourney, readLearnerJourneyByLearnerIdAndQuestionSetId, updateLearnerJourney } from '../../../services/learnerJourney';
+import { LearnerJourneyStatus } from '../../../enums/learnerJourneyStatus';
+import moment from 'moment';
 
 const aggregateLearnerDataOnClassAndSkillLevel = async (learnerId: string, questionLevelData: any[]) => {
   const classMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'class');
@@ -60,6 +64,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
     const { learner_id, questions_data } = dataBody;
 
     const questionMap: any = {};
+    const questionSetTimestampMap: { [id: string]: { start_time?: string; end_time?: string } } = {};
 
     /**
      * DB QUERIES
@@ -78,7 +83,8 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
      * Updating question level data in the following block
      */
     for (const datum of questions_data) {
-      const { question_id, learner_response } = datum;
+      const { question_id, question_set_id, start_time, end_time } = datum;
+      const learner_response = datum.learner_response as { result: string; answerTop?: string };
       const question = _.get(questionMap, question_id, undefined);
 
       /**
@@ -89,7 +95,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
         continue;
       }
 
-      // TODO: conclude score on the basis of correct answer vs learner response
+      const score = getScoreForTheQuestion(question, learner_response);
 
       const subSkillScores = calculateSubSkillScoresForQuestion(question, learner_response);
 
@@ -100,8 +106,10 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
       if (!_.isEmpty(learnerDataExists)) {
         const updateData = {
           ...datum,
+          score,
           sub_skills: subSkillScores,
           attempts_count: learnerDataExists.attempts_count + 1,
+          learner_response,
           updated_by: uuid.v4(), // TODO: replace with valid user id
         };
         await updateLearnerProficiencyQuestionLevelData(learnerDataExists.identifier, updateData);
@@ -112,11 +120,21 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
         ...datum,
         identifier: uuid.v4(),
         learner_id,
+        score,
         question_set_id: question.question_set_id,
         taxonomy: question.taxonomy,
+        learner_response,
         sub_skills: subSkillScores,
         created_by: uuid.v4(), // TODO: replace with valid user id
       });
+
+      if (start_time && moment(start_time).isValid()) {
+        _.set(questionSetTimestampMap, [question_set_id, 'start_time'], start_time);
+      }
+
+      if (end_time && moment(start_time).isValid()) {
+        _.set(questionSetTimestampMap, [question_set_id, 'end_time'], end_time);
+      }
     }
 
     /**
@@ -155,6 +173,42 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
           score: avgScore,
           created_by: uuid.v4(), // TODO: replace with valid user id
         });
+      }
+
+      /**
+       * Updating learner journey
+       */
+      const start_time = _.get(questionSetTimestampMap, [questionSet.identifier, 'start_time']);
+      const end_time = _.get(questionSetTimestampMap, [questionSet.identifier, 'end_time']);
+      const { learnerJourney } = await readLearnerJourneyByLearnerIdAndQuestionSetId(learner_id, questionSet.identifier);
+      const completedQuestionIds = attemptedQuestions.map((data) => data.question_id);
+      if (_.isEmpty(learnerJourney)) {
+        const payload = {
+          learner_id,
+          question_set_id: questionSet.identifier,
+          status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
+          completed_question_ids: completedQuestionIds,
+        };
+        if (start_time) {
+          _.set(payload, 'start_time', start_time);
+        }
+        if (end_time) {
+          _.set(payload, 'end_time', end_time);
+        }
+        await createLearnerJourney(payload);
+      } else {
+        const payload = {
+          status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
+          completed_question_ids: completedQuestionIds,
+          attempts_count: allQuestionsHaveEqualNumberOfAttempts ? learnerJourney?.attempts_count + 1 : learnerJourney.attempts_count,
+        };
+        if (start_time) {
+          _.set(payload, 'start_time', start_time);
+        }
+        if (end_time) {
+          _.set(payload, 'end_time', end_time);
+        }
+        await updateLearnerJourney(learnerJourney.identifier, payload);
       }
     }
 

@@ -37,7 +37,7 @@ LearnerJourney.init(
       allowNull: false,
     },
     completed_question_ids: {
-      type: DataTypes.JSON,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
     status: {

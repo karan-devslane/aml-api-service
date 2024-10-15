@@ -4,7 +4,6 @@ import httpStatus from 'http-status';
 import { ResponseHandler } from '../../../utils/responseHandler';
 import logger from '../../../utils/logger';
 import { amlError } from '../../../types/amlError';
-import { apiId } from '../../LearnerJourneyUpdate/learnerJourneyUpdate';
 import { getEntitySearch } from '../../../services/master';
 import { readLearnerJourney, readLearnerJourneyByLearnerIdAndQuestionSetId } from '../../../services/learnerJourney';
 import { LearnerJourneyStatus } from '../../../enums/learnerJourneyStatus';
@@ -16,7 +15,8 @@ import { boardMaster } from '../../../models/boardMaster';
 import { classMaster } from '../../../models/classMaster';
 import { fetchSkillsByIds } from '../../../services/skill';
 
-const getLearnerNextStep = async (req: Request, res: Response) => {
+const evaluateLearner = async (req: Request, res: Response) => {
+  const apiId = _.get(req, 'id');
   const learner_id = _.get(req, 'params.learner_id');
   const msgid = _.get(req, ['body', 'params', 'msgid']);
   const resmsgid = _.get(res, 'resmsgid');
@@ -138,4 +138,4 @@ const getLearnerNextStep = async (req: Request, res: Response) => {
   });
 };
 
-export default getLearnerNextStep;
+export default evaluateLearner;
