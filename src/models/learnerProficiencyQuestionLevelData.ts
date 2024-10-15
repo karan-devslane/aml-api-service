@@ -9,10 +9,13 @@ export class LearnerProficiencyQuestionLevelData extends Model {
   declare question_set_id: string;
   declare taxonomy: { board: string; class: string; l1_skill: string; l2_skill: string; l3_skill: string };
   declare sub_skills: any;
+  declare learner_response: { result?: string; answerTop?: string; answerBottom?: string };
   declare score: number;
   declare attempts_count: number;
   declare created_by: string;
   declare updated_by: string;
+  declare created_at: Date;
+  declare updated_at: Date;
 }
 
 LearnerProficiencyQuestionLevelData.init(
@@ -46,6 +49,10 @@ LearnerProficiencyQuestionLevelData.init(
     sub_skills: {
       type: DataTypes.JSON,
       allowNull: true,
+    },
+    learner_response: {
+      type: DataTypes.JSON,
+      allowNull: false,
     },
     score: {
       type: DataTypes.DECIMAL,

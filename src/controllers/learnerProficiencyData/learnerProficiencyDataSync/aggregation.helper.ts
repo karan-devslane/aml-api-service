@@ -1,14 +1,52 @@
 import { createAggregateData, findAggregateData, updateAggregateData } from '../../../services/learnerAggregateData';
 import * as _ from 'lodash';
 import * as uuid from 'uuid';
+import { Question } from '../../../models/question';
+import { QuestionType } from '../../../enums/questionType';
 
-export const calculateSubSkillScoresForQuestion = (question: any, learnerResponse: number): { [skillType: string]: number } => {
+export const getScoreForTheQuestion = (question: Question, learnerResponse: { result: string; answerTop?: string }): number => {
+  const { question_type, question_body } = question;
+  const { answer, correct_option, numbers } = question_body;
+  const { result, answerTop } = learnerResponse;
+
+  let score = 0;
+
+  switch (question_type) {
+    case QuestionType.GRID_1:
+    case QuestionType.FIB: {
+      if (answer && answer.result) {
+        const { result } = answer;
+        if (result.toString() === result) {
+          score = 1;
+        }
+      }
+      break;
+    }
+    case QuestionType.MCQ: {
+      if (correct_option && result === correct_option) {
+        score = 1;
+      }
+      break;
+    }
+    case QuestionType.GRID_2: {
+      if (numbers && numbers.n1 && numbers.n2) {
+        if ((numbers.n1 === answerTop && numbers.n2 === result) || (numbers.n2 === answerTop && numbers.n1 === result)) {
+          score = 1;
+        }
+      }
+      break;
+    }
+  }
+  return score;
+};
+
+export const calculateSubSkillScoresForQuestion = (question: any, learnerResponse: { result: string; answerTop?: string }): { [skillType: string]: number } => {
   const { question_body } = question;
   const subSkillScoreMap: { [skillType: string]: number } = {};
   if (question_body) {
     const wrongAnswers = (question_body.wrongAnswers || []) as { option: number; subSkill: string[] }[];
     for (const wrongAnswer of wrongAnswers) {
-      if (wrongAnswer.option === learnerResponse) {
+      if (wrongAnswer.option === +learnerResponse.result) {
         wrongAnswer.subSkill.forEach((subSkill) => _.set(subSkillScoreMap, subSkill, 0));
       }
     }
