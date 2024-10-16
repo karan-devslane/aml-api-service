@@ -85,7 +85,7 @@ const initializeServer = (): void => {
           sameSite: 'strict',
           secure: process.env.AML_SERVICE_APPLICATION_ENV === 'production',
           maxAge: 1000 * 60 * 60 * 24, // 24 hours
-          httpOnly: true, // Mitigate XSS attacks
+          httpOnly: false, // Mitigate XSS attacks
         },
       }),
     );
