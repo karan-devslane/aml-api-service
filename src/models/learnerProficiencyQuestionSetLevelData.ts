@@ -1,13 +1,14 @@
 import { DataTypes, Model } from 'sequelize';
 import { AppDataSource } from '../config';
+import { Taxonomy } from '../types/taxonomy';
 
 export class LearnerProficiencyQuestionSetLevelData extends Model {
   declare id: number;
   declare identifier: string;
   declare learner_id: string;
   declare question_set_id: string;
-  declare taxonomy: { board: string; class: string; l1_skill: string; l2_skill: string; l3_skill: string };
-  declare sub_skills: any;
+  declare taxonomy: Taxonomy;
+  declare sub_skills: { [skillId: number]: number };
   declare score: number;
   declare attempts_count: number;
   declare created_by: string;

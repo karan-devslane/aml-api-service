@@ -3,6 +3,8 @@ import * as _ from 'lodash';
 import * as uuid from 'uuid';
 import { Question } from '../../../models/question';
 import { QuestionType } from '../../../enums/questionType';
+import { LearnerProficiencyQuestionLevelData } from '../../../models/learnerProficiencyQuestionLevelData';
+import { Learner } from '../../../models/learner';
 
 export const getScoreForTheQuestion = (question: Question, learnerResponse: { result: string; answerTop?: string }): number => {
   const { question_type, question_body } = question;
@@ -41,14 +43,22 @@ export const getScoreForTheQuestion = (question: Question, learnerResponse: { re
   return score;
 };
 
-export const calculateSubSkillScoresForQuestion = (question: any, learnerResponse: { result: string; answerTop?: string }): { [skillType: string]: number } => {
+export const calculateSubSkillScoresForQuestion = (question: Question, learnerResponse: { result: string; answerTop?: string }): { [skillId: number]: number } => {
   const { question_body } = question;
-  const subSkillScoreMap: { [skillType: string]: number } = {};
+  const subSkillScoreMap: { [skillId: number]: number } = {};
+
+  const subSkillsNameIdMap: { [skillName: string]: number } = {};
+
+  for (const subSkill of question.sub_skills || []) {
+    _.set(subSkillsNameIdMap, subSkill.name.en, subSkill.id);
+  }
+
   if (question_body) {
-    const wrongAnswers = (question_body.wrongAnswers || []) as { option: number; subSkill: string[] }[];
+    const wrongAnswers = question_body.wrong_answer || [];
     for (const wrongAnswer of wrongAnswers) {
-      if (wrongAnswer.option === +learnerResponse.result) {
-        wrongAnswer.subSkill.forEach((subSkill) => _.set(subSkillScoreMap, subSkill, 0));
+      if (wrongAnswer.value.includes(+learnerResponse.result)) {
+        const subSkillId = _.get(subSkillsNameIdMap, wrongAnswer.subskillname);
+        _.set(subSkillScoreMap, subSkillId, 0);
       }
     }
   }
@@ -56,12 +66,12 @@ export const calculateSubSkillScoresForQuestion = (question: any, learnerRespons
   /**
    * Giving full score for remaining sub-skills
    */
-  const subSkills = (question?.sub_skills || []) as { name: { en: string } }[];
+  const subSkills = question?.sub_skills || [];
   if (subSkills.length) {
     for (const subSkill of subSkills) {
-      const skillName = subSkill.name.en;
-      if (!_.get(subSkillScoreMap, skillName, undefined)) {
-        _.set(subSkillScoreMap, skillName, 1);
+      const subSkillId = subSkill.id;
+      if (!_.get(subSkillScoreMap, subSkillId, undefined)) {
+        _.set(subSkillScoreMap, subSkillId, 1);
       }
     }
   }
@@ -69,14 +79,14 @@ export const calculateSubSkillScoresForQuestion = (question: any, learnerRespons
   return subSkillScoreMap;
 };
 
-export const calculateAverageScoreForGivenSubSkill = (questionLevelData: any[], subSkill: string): number => {
+export const calculateAverageScoreForGivenSubSkill = (questionLevelData: LearnerProficiencyQuestionLevelData[], subSkillId: number): number => {
   let totalScore = 0;
   let totalQuestions = 0;
 
   for (const data of questionLevelData) {
-    const subSkills = (data?.sub_skills || {}) as { [skillName: string]: number };
-    if (_.get(subSkills, subSkill)) {
-      totalScore += _.get(subSkills, subSkill);
+    const subSkills = (data?.sub_skills || {}) as { [skillId: number]: number };
+    if (_.get(subSkills, subSkillId)) {
+      totalScore += _.get(subSkills, subSkillId);
       totalQuestions++;
     }
   }
@@ -84,26 +94,26 @@ export const calculateAverageScoreForGivenSubSkill = (questionLevelData: any[], 
   return +(totalScore / totalQuestions).toFixed(2);
 };
 
-export const calculateSubSkillScoresForQuestionSet = (questionLevelData: any[]): { [skillType: string]: number } => {
-  const subSkillScoreMap: { [skillType: string]: number } = {};
+export const calculateSubSkillScoresForQuestionSet = (questionLevelData: LearnerProficiencyQuestionLevelData[]): { [skillId: number]: number } => {
+  const subSkillScoreMap: { [skillId: number]: number } = {};
 
-  let allRelatedSubSkills: string[] = [];
+  let allRelatedSubSkillIds: number[] = [];
 
   for (const data of questionLevelData) {
-    allRelatedSubSkills = [...allRelatedSubSkills, ...Object.keys(data?.sub_skills || {})];
+    allRelatedSubSkillIds = [...allRelatedSubSkillIds, ...Object.keys(data?.sub_skills || {}).map(Number)];
   }
 
-  allRelatedSubSkills = _.uniq(allRelatedSubSkills);
+  allRelatedSubSkillIds = _.uniq(allRelatedSubSkillIds);
 
-  for (const subSkill of allRelatedSubSkills) {
-    const score = calculateAverageScoreForGivenSubSkill(questionLevelData, subSkill);
-    _.set(subSkillScoreMap, subSkill, score);
+  for (const subSkillId of allRelatedSubSkillIds) {
+    const score = calculateAverageScoreForGivenSubSkill(questionLevelData, subSkillId);
+    _.set(subSkillScoreMap, subSkillId, score);
   }
 
   return subSkillScoreMap;
 };
 
-export const calculateAverageScoreForQuestionSet = (questionLevelData: any[]): number => {
+export const calculateAverageScoreForQuestionSet = (questionLevelData: LearnerProficiencyQuestionLevelData[]): number => {
   let totalScore = 0;
 
   for (const data of questionLevelData) {
@@ -114,19 +124,19 @@ export const calculateAverageScoreForQuestionSet = (questionLevelData: any[]): n
 };
 
 export const getAggregateDataForGivenTaxonomyKey = (
-  questionLevelData: any[],
+  questionLevelData: LearnerProficiencyQuestionLevelData[],
   taxonomyKey: string,
 ): { [key: string]: { total: number; questionsCount: number; sub_skills: { [skillType: string]: number } } } => {
   // key is the value of the taxonomyKey in the taxonomy object, e.g. => if taxonomyKey is l1_skill, key will be addition
-  const resMap: { [key: string]: { total: number; questionsCount: number; sub_skills: { [skillType: string]: number } } } = {};
+  const resMap: { [key: string]: { total: number; questionsCount: number; sub_skills: { [skillType: number]: number } } } = {};
 
-  const relatedQuestionsMap: { [key: string]: any[] } = {};
+  const relatedQuestionsMap: { [key: number]: any[] } = {};
 
   for (const data of questionLevelData) {
     const { taxonomy } = data;
     if (taxonomy && Object.keys(taxonomy || {}).length > 0) {
       if (Object.prototype.hasOwnProperty.call(taxonomy, taxonomyKey)) {
-        const taxonomyKeyValue = _.get(taxonomy, taxonomyKey);
+        const taxonomyKeyValue = _.get(taxonomy, [taxonomyKey, 'id']);
         if (!Object.prototype.hasOwnProperty.call(resMap, taxonomyKeyValue)) {
           _.set(resMap, taxonomyKeyValue, { total: 0, questionsCount: 0, sub_skills: {} });
         }
@@ -140,7 +150,7 @@ export const getAggregateDataForGivenTaxonomyKey = (
     }
   }
 
-  for (const taxonomyKeyValue of Object.keys(relatedQuestionsMap)) {
+  for (const taxonomyKeyValue of Object.keys(relatedQuestionsMap).map(Number)) {
     const relatedQuestions = relatedQuestionsMap[taxonomyKeyValue];
     resMap[taxonomyKeyValue].sub_skills = calculateSubSkillScoresForQuestionSet(relatedQuestions);
   }
@@ -149,30 +159,30 @@ export const getAggregateDataForGivenTaxonomyKey = (
 };
 
 export const aggregateLearnerData = async (
-  learnerId: string,
-  dataKey: string,
+  learner: Learner,
+  dataKey: 'class_id' | 'l1_skill_id' | 'l2_skill_id' | 'l3_skill_id',
   dataMap: { [key: string]: { total: number; questionsCount: number; sub_skills: { [skillType: string]: number } } },
-  board: string,
 ) => {
   for (const dataKeyValue of Object.keys(dataMap)) {
-    const existingEntry = await findAggregateData({ learner_id: learnerId, [dataKey]: dataKeyValue });
+    const existingEntry = await findAggregateData({ learner_id: learner.identifier, [dataKey]: dataKeyValue });
     if (existingEntry) {
       await updateAggregateData(existingEntry.identifier, {
         questions_count: dataMap[dataKeyValue].questionsCount,
         sub_skills: dataMap[dataKeyValue].sub_skills,
         score: +(dataMap[dataKeyValue].total / dataMap[dataKeyValue].questionsCount).toFixed(2),
+        updated_by: learner.identifier,
       });
       continue;
     }
     await createAggregateData({
       identifier: uuid.v4(),
-      learner_id: learnerId,
-      taxonomy: { board },
+      learner_id: learner.identifier,
+      taxonomy: learner.taxonomy,
       [dataKey]: dataKeyValue,
       questions_count: dataMap[dataKeyValue].questionsCount,
       sub_skills: dataMap[dataKeyValue].sub_skills,
       score: +(dataMap[dataKeyValue].total / dataMap[dataKeyValue].questionsCount).toFixed(2),
-      created_by: uuid.v4(), // TODO: replace with valid user id
+      created_by: learner.identifier,
     });
   }
 };

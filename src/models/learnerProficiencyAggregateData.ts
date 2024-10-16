@@ -5,12 +5,12 @@ export class LearnerProficiencyAggregateData extends Model {
   declare id: number;
   declare identifier: string;
   declare learner_id: string;
-  declare class: string;
-  declare l1_skill: string;
-  declare l2_skill: string;
-  declare l3_skill: string;
-  declare taxonomy: { board: string; class: string };
-  declare sub_skills: any;
+  declare class_id: number;
+  declare l1_skill_id: number;
+  declare l2_skill_id: number;
+  declare l3_skill_id: number;
+  declare taxonomy: { board: { id: number }; class: { id: number } };
+  declare sub_skills: { [skillId: number]: number };
   declare questions_count: number;
   declare score: number;
   declare created_by: string;
@@ -33,20 +33,20 @@ LearnerProficiencyAggregateData.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    class: {
-      type: DataTypes.STRING,
+    class_id: {
+      type: DataTypes.NUMBER,
       allowNull: true,
     },
-    l1_skill: {
-      type: DataTypes.STRING,
+    l1_skill_id: {
+      type: DataTypes.NUMBER,
       allowNull: true,
     },
-    l2_skill: {
-      type: DataTypes.STRING,
+    l2_skill_id: {
+      type: DataTypes.NUMBER,
       allowNull: true,
     },
-    l3_skill: {
-      type: DataTypes.STRING,
+    l3_skill_id: {
+      type: DataTypes.NUMBER,
       allowNull: true,
     },
     taxonomy: {

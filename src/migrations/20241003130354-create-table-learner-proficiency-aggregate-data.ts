@@ -29,21 +29,21 @@ export = {
         allowNull: false,
         type: DataTypes.JSONB,
       },
-      class: {
+      class_id: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
       },
-      l1_skill: {
+      l1_skill_id: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
       },
-      l2_skill: {
+      l2_skill_id: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
       },
-      l3_skill: {
+      l3_skill_id: {
         allowNull: true,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
       },
       sub_skills: {
         allowNull: true,

@@ -20,8 +20,13 @@ const evaluateLearner = async (req: Request, res: Response) => {
   const learner_id = _.get(req, 'params.learner_id');
   const msgid = _.get(req, ['body', 'params', 'msgid']);
   const resmsgid = _.get(res, 'resmsgid');
+  const learner = (req as any).learner;
 
-  // TODO: validate learner_id & get their board & class
+  if (learner.identifier !== learner_id) {
+    const code = 'LEARNER_DOES_NOT_EXIST';
+    logger.error({ code, apiId, msgid, resmsgid, message: 'Learner does not exist' });
+    throw amlError(code, 'Learner does not exist', 'NOT_FOUND', 404);
+  }
 
   const { learnerJourney } = await readLearnerJourney(learner_id);
 
@@ -34,45 +39,41 @@ const evaluateLearner = async (req: Request, res: Response) => {
     throw amlError(code, `Learner Journey already in progress`, 'BAD_REQUEST', 400);
   }
 
-  // TODO: replace with valid values
-  const learnerBoard = 'CBSE';
-  const learnerClass = 'Class 5';
+  const learnerBoardId = _.get(learner, ['taxonomy', 'board', 'id']);
+  const learnerClassId = _.get(learner, ['taxonomy', 'class', 'id']);
 
   /**
    * Validate learner board
    */
-  const boardEntity: boardMaster = await getEntitySearch({ entityType: 'board', filters: { name: [{ en: learnerBoard }] } });
+  const boardEntity: boardMaster = await getEntitySearch({ entityType: 'board', filters: { id: learnerBoardId } });
   if (!boardEntity) {
     const code = 'LEARNER_BOARD_NOT_FOUND';
-    logger.error({ code, apiId, msgid, resmsgid, message: `Learner Board: ${learnerBoard} does not exist` });
-    throw amlError(code, `Learner Board: ${learnerBoard} does not exist`, 'NOT_FOUND', 404);
+    logger.error({ code, apiId, msgid, resmsgid, message: `Learner Board: ${learnerBoardId} does not exist` });
+    throw amlError(code, `Learner Board: ${learnerBoardId} does not exist`, 'NOT_FOUND', 404);
   }
 
   /**
    * Validate learner class
    */
-  const classEntity: classMaster = await getEntitySearch({ entityType: 'class', filters: { name: [{ en: learnerBoard }] } });
+  const classEntity: classMaster = await getEntitySearch({ entityType: 'class', filters: { id: learnerClassId } });
   if (!classEntity) {
     const code = 'LEARNER_CLASS_NOT_FOUND';
-    logger.error({ code, apiId, msgid, resmsgid, message: `Learner Class: ${learnerClass} does not exist` });
-    throw amlError(code, `Learner Class: ${learnerClass} does not exist`, 'NOT_FOUND', 404);
+    logger.error({ code, apiId, msgid, resmsgid, message: `Learner Class: ${learnerClassId} does not exist` });
+    throw amlError(code, `Learner Class: ${learnerClassId} does not exist`, 'NOT_FOUND', 404);
   }
 
   const class_ids = (boardEntity?.class_ids || []).sort((a, b) => a.sequence_no - b.sequence_no);
 
   const currentGradeIndex = class_ids.findIndex((datum) => datum.id === classEntity.identifier);
   const highestApplicableGradeMapping = class_ids[currentGradeIndex - 1] as { id: string; l1_skill_ids: string[] };
-  const highestApplicableGrade = await getEntitySearch({ entityType: 'class', filters: { identifier: highestApplicableGradeMapping.id } });
+  const highestApplicableGrade = (await getEntitySearch({ entityType: 'class', filters: { identifier: highestApplicableGradeMapping.id } })) as classMaster;
   const requiredL1SkillsIds = highestApplicableGradeMapping.l1_skill_ids;
   const requiredL1Skills = await fetchSkillsByIds(requiredL1SkillsIds);
 
   let questionSetId: string = '';
 
   for (const skillEntity of requiredL1Skills) {
-    const {
-      name: { en: skill },
-      identifier,
-    } = skillEntity;
+    const { id: skillId, identifier } = skillEntity;
     const allApplicableGradeIds = class_ids.reduce((agg: string[], curr) => {
       if (curr.l1_skill_ids.includes(identifier)) {
         agg.push(curr.id);
@@ -81,18 +82,18 @@ const evaluateLearner = async (req: Request, res: Response) => {
     }, []);
 
     const allApplicableGradeEntities: classMaster[] = await getEntitySearch({ entityType: 'class', filters: { identifier: allApplicableGradeIds } });
-    const allApplicableGrades = allApplicableGradeEntities.map((grade) => grade.name.en);
+    const allApplicableGrades = allApplicableGradeEntities.map((grade) => grade.id);
     /**
      * If not a fresh user
      */
     if (learnerJourney) {
       const learnerJourneyQuestionSet = await getQuestionSetById(learnerJourney.question_set_id);
-      if (learnerJourneyQuestionSet.purpose !== QuestionSetPurposeType.MAIN_DIAGNOSTIC && learnerJourneyQuestionSet.taxonomy.l1_skill === skill) {
+      if (learnerJourneyQuestionSet!.purpose !== QuestionSetPurposeType.MAIN_DIAGNOSTIC && learnerJourneyQuestionSet!.taxonomy.l1_skill.id === skillId) {
         const nextPracticeQuestionSet = await getNextPracticeQuestionSetInSequence({
-          board: learnerJourneyQuestionSet.taxonomy.board,
-          classes: allApplicableGrades,
-          l1Skill: learnerJourneyQuestionSet.taxonomy.l1_skill,
-          lastSetSequence: learnerJourneyQuestionSet.sequence,
+          boardId: learnerJourneyQuestionSet!.taxonomy.board.id,
+          classIds: allApplicableGrades,
+          l1SkillId: learnerJourneyQuestionSet!.taxonomy.l1_skill.id,
+          lastSetSequence: learnerJourneyQuestionSet!.sequence,
         });
 
         if (nextPracticeQuestionSet) {
@@ -107,16 +108,16 @@ const evaluateLearner = async (req: Request, res: Response) => {
      * last attempted question set purpose is MD OR
      * no more practice question sets are available for the current skill
      */
-    const mainDiagnosticQS = await getMainDiagnosticQuestionSet({ board: learnerBoard, class: highestApplicableGrade, l1Skill: skill });
+    const mainDiagnosticQS = await getMainDiagnosticQuestionSet({ boardId: learnerBoardId, classId: highestApplicableGrade.id, l1SkillId: skillId });
     const { learnerJourney: learnerJourneyForMDQS } = await readLearnerJourneyByLearnerIdAndQuestionSetId(learner_id, mainDiagnosticQS.identifier);
     if (_.isEmpty(learnerJourneyForMDQS)) {
       questionSetId = mainDiagnosticQS.identifier;
       break;
     }
 
-    let lowestApplicableGradeForPractice = '';
+    let lowestApplicableGradeForPractice = -1;
     for (const grade of allApplicableGrades) {
-      const learnerAggregateData = await findAggregateData({ learner_id, class: grade });
+      const learnerAggregateData = await findAggregateData({ learner_id, class_id: grade });
       if (learnerAggregateData && learnerAggregateData?.score < PASSING_MARKS) {
         lowestApplicableGradeForPractice = grade;
         break;
@@ -124,7 +125,7 @@ const evaluateLearner = async (req: Request, res: Response) => {
     }
 
     if (lowestApplicableGradeForPractice) {
-      const practiceQuestionSet = await getPracticeQuestionSet({ board: learnerBoard, class: lowestApplicableGradeForPractice, l1Skill: skill });
+      const practiceQuestionSet = await getPracticeQuestionSet({ boardId: learnerBoardId, classId: lowestApplicableGradeForPractice, l1SkillId: skillId });
       if (practiceQuestionSet) {
         questionSetId = practiceQuestionSet.identifier;
         break;

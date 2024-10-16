@@ -23,6 +23,7 @@ const learnerJourneyRead = async (req: Request, res: Response) => {
 
   if (_.isEmpty(learnerJourney)) {
     ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Learner Journey not found', data: null } });
+    return;
   }
 
   ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Learner Journey Read Successfully', data: learnerJourney } });
