@@ -1,28 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import { AppDataSource } from '../config';
-
-interface Skill {
-  id: number;
-  name: { [key: string]: string };
-}
-
-interface Class {
-  id: number;
-  name: { [key: string]: string };
-}
-
-interface Board {
-  id: number;
-  name: { [key: string]: string };
-}
-
-interface Taxonomy {
-  board: Board;
-  class: Class;
-  l1_skill: Skill;
-  l2_skill: Skill[];
-  l3_skill: Skill[];
-}
+import { Taxonomy } from '../types/taxonomy';
 
 export class Content extends Model {
   declare id: number;

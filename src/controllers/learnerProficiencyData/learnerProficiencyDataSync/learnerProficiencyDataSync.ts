@@ -30,17 +30,18 @@ import {
 import { createLearnerJourney, readLearnerJourneyByLearnerIdAndQuestionSetId, updateLearnerJourney } from '../../../services/learnerJourney';
 import { LearnerJourneyStatus } from '../../../enums/learnerJourneyStatus';
 import moment from 'moment';
+import { Learner } from '../../../models/learner';
 
-const aggregateLearnerDataOnClassAndSkillLevel = async (learnerId: string, questionLevelData: any[]) => {
+const aggregateLearnerDataOnClassAndSkillLevel = async (learner: Learner, questionLevelData: any[]) => {
   const classMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'class');
   const l1SkillMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'l1_skill');
   const l2SkillMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'l2_skill');
   const l3SkillMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'l3_skill');
 
-  await aggregateLearnerData(learnerId, 'class', classMap, questionLevelData?.[0]?.taxonomy?.board);
-  await aggregateLearnerData(learnerId, 'l1_skill', l1SkillMap, questionLevelData?.[0]?.taxonomy?.board);
-  await aggregateLearnerData(learnerId, 'l2_skill', l2SkillMap, questionLevelData?.[0]?.taxonomy?.board);
-  await aggregateLearnerData(learnerId, 'l3_skill', l3SkillMap, questionLevelData?.[0]?.taxonomy?.board);
+  await aggregateLearnerData(learner, 'class_id', classMap);
+  await aggregateLearnerData(learner, 'l1_skill_id', l1SkillMap);
+  await aggregateLearnerData(learner, 'l2_skill_id', l2SkillMap);
+  await aggregateLearnerData(learner, 'l3_skill_id', l3SkillMap);
 };
 
 const learnerProficiencyDataSync = async (req: Request, res: Response) => {
@@ -221,7 +222,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
    */
   const learnerAttempts = await getQuestionLevelDataRecordsForLearner(learner_id);
 
-  await aggregateLearnerDataOnClassAndSkillLevel(learner_id, learnerAttempts);
+  await aggregateLearnerDataOnClassAndSkillLevel(learner, learnerAttempts);
 
   ResponseHandler.successResponse(req, res, {
     status: httpStatus.OK,

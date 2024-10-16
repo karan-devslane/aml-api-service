@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { QuestionSetPurposeType } from '../enums/questionSetPurposeType';
 
 // Get a single question by ID
-export const getQuestionSetById = async (id: string): Promise<any> => {
+export const getQuestionSetById = async (id: string): Promise<QuestionSet | null> => {
   const whereClause = {
     identifier: id,
   };
@@ -143,48 +143,42 @@ export const getQuestionSetsByIdentifiers = async (identifiers: string[]): Promi
   });
 };
 
-export const getMainDiagnosticQuestionSet = async (filters: { board?: string; class?: string; l1Skill?: string }): Promise<any> => {
+export const getMainDiagnosticQuestionSet = async (filters: { boardId?: number; classId?: number; l1SkillId?: number }): Promise<any> => {
   let whereClause: any = {
     purpose: QuestionSetPurposeType.MAIN_DIAGNOSTIC,
   };
 
-  if (filters.board) {
+  if (filters.boardId) {
     whereClause = {
       ...whereClause,
       taxonomy: {
         ...(whereClause.taxonomy || {}),
         board: {
-          name: {
-            en: filters.board,
-          },
+          id: filters.boardId
         },
       },
     };
   }
 
-  if (filters.class) {
+  if (filters.classId) {
     whereClause = {
       ...whereClause,
       taxonomy: {
         ...(whereClause.taxonomy || {}),
         class: {
-          name: {
-            en: filters.class,
-          },
+          id: filters.classId,
         },
       },
     };
   }
 
-  if (filters.l1Skill) {
+  if (filters.l1SkillId) {
     whereClause = {
       ...whereClause,
       taxonomy: {
         ...(whereClause.taxonomy || {}),
         l1_skill: {
-          name: {
-            en: filters.l1Skill,
-          },
+          id: filters.l1SkillId,
         },
       },
     };
@@ -197,26 +191,20 @@ export const getMainDiagnosticQuestionSet = async (filters: { board?: string; cl
   });
 };
 
-export const getPracticeQuestionSet = (filters: { board: string; class: string; l1Skill: string }): Promise<any> => {
+export const getPracticeQuestionSet = (filters: { boardId: number; classId: number; l1SkillId: number }): Promise<any> => {
   const whereClause: any = {
     purpose: {
       [Op.ne]: QuestionSetPurposeType.MAIN_DIAGNOSTIC,
     },
     taxonomy: {
       board: {
-        name: {
-          en: filters.board,
-        },
+        id: filters.boardId,
       },
       class: {
-        name: {
-          en: filters.class,
-        },
+        id: filters.classId,
       },
       l1_skill: {
-        name: {
-          en: filters.l1Skill,
-        },
+        id: filters.l1SkillId,
       },
     },
   };
@@ -227,7 +215,7 @@ export const getPracticeQuestionSet = (filters: { board: string; class: string; 
   });
 };
 
-export const getNextPracticeQuestionSetInSequence = (filters: { board: string; classes: string[]; l1Skill: string; lastSetSequence: number }): Promise<any> => {
+export const getNextPracticeQuestionSetInSequence = (filters: { boardId: number; classIds: number[]; l1SkillId: number; lastSetSequence: number }): Promise<any> => {
   const whereClause: any = {
     sequence: {
       [Op.gt]: filters.lastSetSequence,
@@ -237,21 +225,13 @@ export const getNextPracticeQuestionSetInSequence = (filters: { board: string; c
     },
     taxonomy: {
       board: {
-        name: {
-          en: filters.board,
-        },
+        id: filters.boardId,
       },
       class: {
-        name: {
-          en: {
-            [Op.in]: filters.classes,
-          },
-        },
+        id: filters.classIds,
       },
       l1_skill: {
-        name: {
-          en: filters.l1Skill,
-        },
+        id: filters.l1SkillId,
       },
     },
   };
