@@ -154,7 +154,7 @@ export const getMainDiagnosticQuestionSet = async (filters: { boardId?: number; 
       taxonomy: {
         ...(whereClause.taxonomy || {}),
         board: {
-          id: filters.boardId
+          id: filters.boardId,
         },
       },
     };
