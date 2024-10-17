@@ -9,7 +9,7 @@ import { amlError } from '../../../types/amlError';
 import {
   createLearnerProficiencyQuestionLevelData,
   createLearnerProficiencyQuestionSetLevelData,
-  getQuestionLevelDataByLearnerIdAndQuestionId,
+  getQuestionLevelDataByLearnerIdQuestionIdAndQuestionSetId,
   getQuestionLevelDataRecordsForLearner,
   getQuestionSetLevelDataByLearnerIdAndQuestionSetId,
   getRecordsForLearnerByQuestionSetId,
@@ -105,9 +105,9 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
     const subSkillScores = calculateSubSkillScoresForQuestion(question, learner_response);
 
     /**
-     * If an entry already exists for the (learner_id, question_id) pair, then we increment the attempt count & update the new values
+     * If an entry already exists for the (learner_id, question_id, question_set_id) pair, then we increment the attempt count & update the new values
      */
-    const learnerDataExists = await getQuestionLevelDataByLearnerIdAndQuestionId(learner_id, question_id);
+    const learnerDataExists = await getQuestionLevelDataByLearnerIdQuestionIdAndQuestionSetId(learner_id, question_id, question_set_id);
     if (!_.isEmpty(learnerDataExists)) {
       const updateData = {
         ...datum,
@@ -126,7 +126,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
       identifier: uuid.v4(),
       learner_id,
       score,
-      question_set_id: question.question_set_id,
+      question_set_id: question_set_id,
       taxonomy: question.taxonomy,
       learner_response,
       sub_skills: subSkillScores,
@@ -164,20 +164,20 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
           updated_by: learner_id,
         };
         await updateLearnerProficiencyQuestionSetLevelData(learnerDataExists.identifier, updateData);
-        continue;
+      } else {
+        /**
+         * If an entry does not exist for the (learner_id, question_set_id) pair, then we make an entry
+         */
+        await createLearnerProficiencyQuestionSetLevelData({
+          identifier: uuid.v4(),
+          learner_id,
+          question_set_id: questionSet.identifier,
+          taxonomy: questionSet.taxonomy,
+          sub_skills: subSkillScores,
+          score: avgScore,
+          created_by: learner_id,
+        });
       }
-      /**
-       * If an entry does not exist for the (learner_id, question_set_id) pair, then we make an entry
-       */
-      await createLearnerProficiencyQuestionSetLevelData({
-        identifier: uuid.v4(),
-        learner_id,
-        question_set_id: questionSet.identifier,
-        taxonomy: questionSet.taxonomy,
-        sub_skills: subSkillScores,
-        score: avgScore,
-        created_by: learner_id,
-      });
     }
 
     /**

@@ -50,6 +50,9 @@ export const calculateSubSkillScoresForQuestion = (question: Question, learnerRe
   const subSkillsNameIdMap: { [skillName: string]: number } = {};
 
   for (const subSkill of question.sub_skills || []) {
+    if (!subSkill) {
+      continue;
+    }
     _.set(subSkillsNameIdMap, subSkill.name.en, subSkill.id);
   }
 

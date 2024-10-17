@@ -3,9 +3,9 @@ import { LearnerProficiencyQuestionLevelData } from '../models/learnerProficienc
 import { LearnerProficiencyAggregateData } from '../models/learnerProficiencyAggregateData';
 import { LearnerProficiencyQuestionSetLevelData } from '../models/learnerProficiencyQuestionSetLevelData';
 
-export const getQuestionLevelDataByLearnerIdAndQuestionId = async (learnerId: string, questionId: string): Promise<LearnerProficiencyQuestionLevelData | null> => {
+export const getQuestionLevelDataByLearnerIdQuestionIdAndQuestionSetId = async (learnerId: string, questionId: string, questionSetId: string): Promise<LearnerProficiencyQuestionLevelData | null> => {
   return LearnerProficiencyQuestionLevelData.findOne({
-    where: { learner_id: learnerId, question_id: questionId },
+    where: { learner_id: learnerId, question_id: questionId, question_set_id: questionSetId },
     attributes: { exclude: ['id'] },
     raw: true,
   });
