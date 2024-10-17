@@ -17,7 +17,7 @@ import {
   updateLearnerProficiencyQuestionSetLevelData,
 } from '../../../services/learnerProficiencyData';
 import { getQuestionSetsByIdentifiers } from '../../../services/questionSet';
-import { getQuestionsByIdentifiers, getQuestionsCountForQuestionSet } from '../../../services/question';
+import { getQuestionsByIdentifiers } from '../../../services/question';
 import * as uuid from 'uuid';
 import {
   aggregateLearnerData,
@@ -35,8 +35,8 @@ import { Learner } from '../../../models/learner';
 const aggregateLearnerDataOnClassAndSkillLevel = async (learner: Learner, questionLevelData: any[]) => {
   const classMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'class');
   const l1SkillMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'l1_skill');
-  const l2SkillMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'l2_skill');
-  const l3SkillMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'l3_skill');
+  const l2SkillMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'l2_skill', true);
+  const l3SkillMap = getAggregateDataForGivenTaxonomyKey(questionLevelData, 'l3_skill', true);
 
   await aggregateLearnerData(learner, 'class_id', classMap);
   await aggregateLearnerData(learner, 'l1_skill_id', l1SkillMap);
@@ -104,6 +104,14 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
 
     const subSkillScores = calculateSubSkillScoresForQuestion(question, learner_response);
 
+    if (start_time && moment(start_time).isValid()) {
+      _.set(questionSetTimestampMap, [question_set_id, 'start_time'], start_time);
+    }
+
+    if (end_time && moment(start_time).isValid()) {
+      _.set(questionSetTimestampMap, [question_set_id, 'end_time'], end_time);
+    }
+
     /**
      * If an entry already exists for the (learner_id, question_id, question_set_id) pair, then we increment the attempt count & update the new values
      */
@@ -132,21 +140,13 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
       sub_skills: subSkillScores,
       created_by: learner_id,
     });
-
-    if (start_time && moment(start_time).isValid()) {
-      _.set(questionSetTimestampMap, [question_set_id, 'start_time'], start_time);
-    }
-
-    if (end_time && moment(start_time).isValid()) {
-      _.set(questionSetTimestampMap, [question_set_id, 'end_time'], end_time);
-    }
   }
 
   /**
    * Updating question set level data in the following block
    */
   for (const questionSet of questionSets) {
-    const totalQuestionsCount = await getQuestionsCountForQuestionSet(questionSet.identifier);
+    const totalQuestionsCount = (questionSet.questions || []).length;
     const attemptedQuestions = await getRecordsForLearnerByQuestionSetId(learner_id, questionSet.identifier);
     const allQuestionsHaveEqualNumberOfAttempts = attemptedQuestions.every((question: { attempts_count: number }) => question.attempts_count === (attemptedQuestions?.[0]?.attempts_count || 0));
     if (totalQuestionsCount === attemptedQuestions.length && totalQuestionsCount > 0 && allQuestionsHaveEqualNumberOfAttempts) {
@@ -189,10 +189,12 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
     const completedQuestionIds = attemptedQuestions.map((data) => data.question_id);
     if (_.isEmpty(learnerJourney)) {
       const payload = {
+        identifier: uuid.v4(),
         learner_id,
         question_set_id: questionSet.identifier,
         status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
         completed_question_ids: completedQuestionIds,
+        created_by: learner_id,
       };
       if (start_time) {
         _.set(payload, 'start_time', start_time);
@@ -206,6 +208,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
         status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
         completed_question_ids: completedQuestionIds,
         attempts_count: allQuestionsHaveEqualNumberOfAttempts ? learnerJourney?.attempts_count + 1 : learnerJourney.attempts_count,
+        updated_by: learner_id,
       };
       if (start_time) {
         _.set(payload, 'start_time', start_time);
