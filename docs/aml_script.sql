@@ -2049,3 +2049,93 @@ CREATE TABLE IF NOT EXISTS question_stage (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+create table if not exists learner (
+  id serial primary key,
+  identifier varchar(255) not null unique,
+  username varchar(255) not null unique,
+  password varchar(255) not null,
+  taxonomy jsonb not null,
+  created_by varchar(255) not null,
+  updated_by varchar(255),
+  created_at timestamp with time zone not null,
+  updated_at timestamp with time zone not null
+);
+
+
+create table if not exists learner_sessions (
+  sid varchar(255) not null primary key,
+  sess json not null,
+  expire timestamp with time zone not null
+);
+
+
+create table if not exists learner_journey (
+  id serial primary key,
+  identifier varchar(255) not null unique,
+  learner_id varchar(255) not null,
+  question_set_id varchar(255) not null,
+  completed_question_ids varchar(255) [] not null,
+  status varchar(255) default 'in_progress' :: character varying not null,
+  start_time timestamp with time zone not null,
+  end_time timestamp with time zone,
+  attempts_count integer default 1 not null,
+  created_by varchar(255) not null,
+  updated_by varchar(255),
+  created_at timestamp with time zone not null,
+  updated_at timestamp with time zone not null
+);
+
+
+create table if not exists learner_proficiency_question_level_data (
+  id serial primary key,
+  identifier varchar(255) not null unique,
+  learner_id varchar(255) not null,
+  question_id varchar(255) not null,
+  question_set_id varchar(255) not null,
+  taxonomy jsonb,
+  sub_skills jsonb,
+  learner_response jsonb not null,
+  score double precision not null,
+  attempts_count integer default 1 not null,
+  created_by varchar(255) not null,
+  updated_by varchar(255),
+  created_at timestamp with time zone not null,
+  updated_at timestamp with time zone not null
+);
+
+
+create table if not exists learner_proficiency_question_set_level_data (
+  id serial primary key,
+  identifier varchar(255) not null unique,
+  learner_id varchar(255) not null,
+  question_set_id varchar(255) not null,
+  taxonomy jsonb,
+  sub_skills jsonb,
+  score double precision not null,
+  attempts_count integer default 1 not null,
+  created_by varchar(255) not null,
+  updated_by varchar(255),
+  created_at timestamp with time zone not null,
+  updated_at timestamp with time zone not null
+);
+
+
+create table if not exists learner_proficiency_aggregate_data (
+  id serial primary key,
+  identifier varchar(255) not null unique,
+  learner_id varchar(255) not null,
+  taxonomy jsonb not null,
+  class_id integer,
+  l1_skill_id integer,
+  l2_skill_id integer,
+  l3_skill_id integer,
+  sub_skills jsonb,
+  questions_count integer not null,
+  score numeric not null,
+  created_by varchar(255) not null,
+  updated_by varchar(255),
+  created_at timestamp with time zone not null,
+  updated_at timestamp with time zone not null
+);
