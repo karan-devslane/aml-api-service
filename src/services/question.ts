@@ -92,14 +92,6 @@ export const getAllQuestionsById = async (is: string[]): Promise<any> => {
     raw: true,
   });
 };
-export const getQuestionsCountForQuestionSet = async (questionSetId: string): Promise<number> => {
-  return Question.count({
-    where: {
-      question_set_id: questionSetId,
-      status: Status.LIVE,
-    },
-  });
-};
 
 export const checkQuestionsExist = async (questionIdentifiers: string[]): Promise<{ exists: boolean; foundQuestions?: any[] }> => {
   const foundQuestions = await Question.findAll({

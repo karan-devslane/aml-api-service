@@ -8,7 +8,7 @@ import { Learner } from '../../../models/learner';
 
 export const getScoreForTheQuestion = (question: Question, learnerResponse: { result: string; answerTop?: string }): number => {
   const { question_type, question_body } = question;
-  const { answers, correct_option, numbers } = question_body;
+  const { answers, correct_option, numbers, options } = question_body;
   const { result, answerTop } = learnerResponse;
 
   let score = 0;
@@ -17,16 +17,20 @@ export const getScoreForTheQuestion = (question: Question, learnerResponse: { re
     case QuestionType.GRID_1:
     case QuestionType.FIB: {
       if (answers && answers.result) {
-        const { result } = answers;
-        if (result.toString() === result) {
+        const { result: correctAnswer } = answers;
+        if (correctAnswer.toString() === result.toString()) {
           score = 1;
         }
       }
       break;
     }
     case QuestionType.MCQ: {
-      if (correct_option && result === correct_option) {
-        score = 1;
+      if (correct_option) {
+        const correctOptionIndex = +correct_option.split(' ')[1] - 1;
+        const correctAnswer = options[correctOptionIndex];
+        if (correctAnswer.toString() === result.toString()) {
+          score = 1;
+        }
       }
       break;
     }
@@ -50,6 +54,9 @@ export const calculateSubSkillScoresForQuestion = (question: Question, learnerRe
   const subSkillsNameIdMap: { [skillName: string]: number } = {};
 
   for (const subSkill of question.sub_skills || []) {
+    if (!subSkill) {
+      continue;
+    }
     _.set(subSkillsNameIdMap, subSkill.name.en, subSkill.id);
   }
 
@@ -126,6 +133,7 @@ export const calculateAverageScoreForQuestionSet = (questionLevelData: LearnerPr
 export const getAggregateDataForGivenTaxonomyKey = (
   questionLevelData: LearnerProficiencyQuestionLevelData[],
   taxonomyKey: string,
+  isArray = false,
 ): { [key: string]: { total: number; questionsCount: number; sub_skills: { [skillType: string]: number } } } => {
   // key is the value of the taxonomyKey in the taxonomy object, e.g. => if taxonomyKey is l1_skill, key will be addition
   const resMap: { [key: string]: { total: number; questionsCount: number; sub_skills: { [skillType: number]: number } } } = {};
@@ -136,16 +144,32 @@ export const getAggregateDataForGivenTaxonomyKey = (
     const { taxonomy } = data;
     if (taxonomy && Object.keys(taxonomy || {}).length > 0) {
       if (Object.prototype.hasOwnProperty.call(taxonomy, taxonomyKey)) {
-        const taxonomyKeyValue = _.get(taxonomy, [taxonomyKey, 'id']);
-        if (!Object.prototype.hasOwnProperty.call(resMap, taxonomyKeyValue)) {
-          _.set(resMap, taxonomyKeyValue, { total: 0, questionsCount: 0, sub_skills: {} });
+        if (isArray) {
+          const dataPoints = (_.get(taxonomy, taxonomyKey) || []).filter((v: any) => !!v);
+          for (const datum of dataPoints) {
+            const taxonomyKeyValue = _.get(datum, 'id');
+            if (!Object.prototype.hasOwnProperty.call(resMap, taxonomyKeyValue)) {
+              _.set(resMap, taxonomyKeyValue, { total: 0, questionsCount: 0, sub_skills: {} });
+            }
+            resMap[taxonomyKeyValue].total += data.score;
+            resMap[taxonomyKeyValue].questionsCount += 1;
+            if (!Object.prototype.hasOwnProperty.call(relatedQuestionsMap, taxonomyKeyValue)) {
+              _.set(relatedQuestionsMap, taxonomyKeyValue, []);
+            }
+            relatedQuestionsMap[taxonomyKeyValue].push(data);
+          }
+        } else {
+          const taxonomyKeyValue = _.get(taxonomy, [taxonomyKey, 'id']);
+          if (!Object.prototype.hasOwnProperty.call(resMap, taxonomyKeyValue)) {
+            _.set(resMap, taxonomyKeyValue, { total: 0, questionsCount: 0, sub_skills: {} });
+          }
+          resMap[taxonomyKeyValue].total += data.score;
+          resMap[taxonomyKeyValue].questionsCount += 1;
+          if (!Object.prototype.hasOwnProperty.call(relatedQuestionsMap, taxonomyKeyValue)) {
+            _.set(relatedQuestionsMap, taxonomyKeyValue, []);
+          }
+          relatedQuestionsMap[taxonomyKeyValue].push(data);
         }
-        resMap[taxonomyKeyValue].total += data.score;
-        resMap[taxonomyKeyValue].questionsCount += 1;
-        if (!Object.prototype.hasOwnProperty.call(relatedQuestionsMap, taxonomyKeyValue)) {
-          _.set(relatedQuestionsMap, taxonomyKeyValue, []);
-        }
-        relatedQuestionsMap[taxonomyKeyValue].push(data);
       }
     }
   }
