@@ -14,12 +14,6 @@ jobs:
   build-api-service-image:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout portal code
-        uses: actions/checkout@v4
-        with:
-          repository: Assisted-Math-Learning/aml-portal
-          ref: develop
-          path: ./portal
       - name: Login to docker hub
         uses: docker/login-action@v3
         with:
