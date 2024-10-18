@@ -3,6 +3,7 @@ RUN apk add --no-cache postgresql-client
 RUN mkdir -p /opt/api-service
 COPY . ./opt/api-service
 WORKDIR /opt/api-service
+RUN ls -lh
 RUN npm install
 COPY . .
 RUN ls -lh
