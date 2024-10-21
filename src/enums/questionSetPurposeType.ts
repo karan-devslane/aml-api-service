@@ -1,4 +1,6 @@
 export enum QuestionSetPurposeType {
-  MAIN_DIAGNOSTIC = 'main_diagnostic',
-  PRACTICE = 'practice',
+  MISCONCEPTION = 'Misconception',
+  MIXED_PRACTICE = 'Mixed Practice',
+  MAIN_DIAGNOSTIC = 'Main Diagnostic',
+  WORKSHEET = 'Worksheet',
 }
