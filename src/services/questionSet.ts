@@ -228,7 +228,9 @@ export const getNextPracticeQuestionSetInSequence = (filters: { boardId: string;
         identifier: filters.boardId,
       },
       class: {
-        identifier: filters.classIds,
+        identifier: {
+          [Op.in]: filters.classIds,
+        },
       },
       l1_skill: {
         identifier: filters.l1SkillId,
