@@ -6,19 +6,17 @@ RUN cd /app/aml-portal
 
 FROM --platform=linux/amd64 node:20-alpine
 RUN apk add --no-cache postgresql-client
-RUN mkdir -p /opt/api-service/portal
+RUN mkdir -p /opt/api-service/portal/dist
 RUN mkdir -p /opt/api-service/dist
+COPY --from=clone /app/aml-portal /opt/api-service/portal
+WORKDIR /opt/api-service/portal
+RUN yarn install
+RUN npm run build
+RUN cp -r /opt/api-service/portal/dist /opt/api-service/dist
+RUN rm -rf /opt/api-service/portal
 COPY . ./opt/api-service
 WORKDIR /opt/api-service
-COPY --from=clone /app/aml-portal /opt/api-service/portal
 RUN npm install
-COPY . .
-WORKDIR /opt/api-service/portal
-RUN npm install --legacy-peer-deps
-RUN npm run build
-COPY /opt/api-service/portal/dist /opt/api-service/dist
-RUN rm -rf /opt/api-service/portal
 WORKDIR /opt/api-service
-RUN ls -lah
 EXPOSE 3000
 CMD ["npm", "run", "start"]
