@@ -93,6 +93,18 @@ export const getAllQuestionsById = async (is: string[]): Promise<any> => {
   });
 };
 
+export const getAllQuestionsByIdentifiers = async (is: string[]): Promise<any> => {
+  return Question.findAll({
+    where: {
+      identifier: {
+        [Op.in]: is,
+      },
+    },
+    attributes: { exclude: ['id'] },
+    raw: true,
+  });
+};
+
 export const checkQuestionsExist = async (questionIdentifiers: string[]): Promise<{ exists: boolean; foundQuestions?: any[] }> => {
   const foundQuestions = await Question.findAll({
     where: {
