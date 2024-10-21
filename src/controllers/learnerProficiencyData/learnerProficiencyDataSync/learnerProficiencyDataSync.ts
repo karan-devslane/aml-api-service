@@ -192,7 +192,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
         identifier: uuid.v4(),
         learner_id,
         question_set_id: questionSet.identifier,
-        status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
+        status: totalQuestionsCount === attemptedQuestions.length && allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
         completed_question_ids: completedQuestionIds,
         created_by: learner_id,
       };
