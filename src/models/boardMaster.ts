@@ -6,7 +6,7 @@ export class boardMaster extends Model {
   declare identifier: string;
   declare name: { [key: string]: string };
   declare class_ids: Array<{
-    id: string;
+    identifier: string;
     sequence_no: number;
     l1_skill_ids: string[];
   }> | null;

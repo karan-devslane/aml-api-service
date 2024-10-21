@@ -107,16 +107,16 @@ const handleBoardInsertion = async (boardData: any[]) => {
       if (!_.isEmpty(classIds)) {
         // Check each class_id object
         for (const classId of classIds) {
-          const { id, l1_skill_ids } = classId;
+          const { identifier, l1_skill_ids } = classId;
 
           // Validate class id
-          if (!id) {
+          if (!identifier) {
             const code = 'CLASS_ID_MISSING';
             throw amlError(code, 'Class Id is missing', 'BAD_REQUEST', 400);
           }
 
           // Validate class existence
-          const isClassIdExists = await getClassById(id);
+          const isClassIdExists = await getClassById(identifier);
           if (!isClassIdExists) {
             const code = 'CLASS_ID_NOT_EXISTS';
             throw amlError(code, 'Class Id does not exist', 'NOT_FOUND', 404);
@@ -197,6 +197,8 @@ export const getEntitySearch = async (req: Record<string, any>): Promise<any> =>
           };
         }),
       };
+    } else {
+      whereClause[key] = value;
     }
   });
 
