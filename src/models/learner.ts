@@ -7,8 +7,8 @@ export class Learner extends Model {
   declare username: string;
   declare password: string;
   declare taxonomy: {
-    board: { id: number; name: { [key: string]: string } };
-    class: { id: number; name: { [key: string]: string } };
+    board: { identifier: string; name: { [key: string]: string } };
+    class: { identifier: string; name: { [key: string]: string } };
   };
   declare created_by: string;
   declare updated_by: string;

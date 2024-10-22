@@ -39,14 +39,13 @@ const evaluateLearner = async (req: Request, res: Response) => {
     throw amlError(code, `Learner Journey already in progress`, 'BAD_REQUEST', 400);
   }
 
-  const learnerBoardId = _.get(learner, ['taxonomy', 'board', 'id']);
-  const learnerClassId = _.get(learner, ['taxonomy', 'class', 'id']);
-
+  const learnerBoardId = _.get(learner, ['taxonomy', 'board', 'identifier']);
+  const learnerClassId = _.get(learner, ['taxonomy', 'class', 'identifier']);
   /**
    * Validate learner board
    */
-  const boardEntity: boardMaster = await getEntitySearch({ entityType: 'board', filters: { id: learnerBoardId } });
-  if (!boardEntity) {
+  const boardEntity: boardMaster[] = await getEntitySearch({ entityType: 'board', filters: { identifier: learnerBoardId } });
+  if (!boardEntity.length) {
     const code = 'LEARNER_BOARD_NOT_FOUND';
     logger.error({ code, apiId, msgid, resmsgid, message: `Learner Board: ${learnerBoardId} does not exist` });
     throw amlError(code, `Learner Board: ${learnerBoardId} does not exist`, 'NOT_FOUND', 404);
@@ -55,44 +54,42 @@ const evaluateLearner = async (req: Request, res: Response) => {
   /**
    * Validate learner class
    */
-  const classEntity: classMaster = await getEntitySearch({ entityType: 'class', filters: { id: learnerClassId } });
-  if (!classEntity) {
+  const classEntity: classMaster[] = await getEntitySearch({ entityType: 'class', filters: { identifier: learnerClassId } });
+  if (!classEntity.length) {
     const code = 'LEARNER_CLASS_NOT_FOUND';
     logger.error({ code, apiId, msgid, resmsgid, message: `Learner Class: ${learnerClassId} does not exist` });
     throw amlError(code, `Learner Class: ${learnerClassId} does not exist`, 'NOT_FOUND', 404);
   }
 
-  const class_ids = (boardEntity?.class_ids || []).sort((a, b) => a.sequence_no - b.sequence_no);
+  const class_ids = (boardEntity?.[0]?.class_ids || []).sort((a, b) => a.sequence_no - b.sequence_no);
+  const currentGrade = class_ids.find((datum) => datum.identifier === classEntity?.[0]?.identifier);
 
-  const currentGradeIndex = class_ids.findIndex((datum) => datum.id === classEntity.identifier);
-  const highestApplicableGradeMapping = class_ids[currentGradeIndex - 1] as { id: string; l1_skill_ids: string[] };
-  const highestApplicableGrade = (await getEntitySearch({ entityType: 'class', filters: { identifier: highestApplicableGradeMapping.id } })) as classMaster;
+  const currentGradeIndex = class_ids.findIndex((datum) => datum.identifier === classEntity?.[0]?.identifier);
+  const highestApplicableGradeMapping = class_ids[currentGradeIndex - 1] as { identifier: string; l1_skill_ids: string[] };
   const requiredL1SkillsIds = highestApplicableGradeMapping.l1_skill_ids;
   const requiredL1Skills = await fetchSkillsByIds(requiredL1SkillsIds);
 
   let questionSetId: string = '';
 
   for (const skillEntity of requiredL1Skills) {
-    const { id: skillId, identifier } = skillEntity;
+    const { identifier: skillIdentifier } = skillEntity;
     const allApplicableGradeIds = class_ids.reduce((agg: string[], curr) => {
-      if (curr.l1_skill_ids.includes(identifier)) {
-        agg.push(curr.id);
+      if (curr.l1_skill_ids.includes(skillIdentifier) && curr.sequence_no < currentGrade!.sequence_no) {
+        agg.push(curr.identifier);
       }
       return agg;
     }, []);
 
-    const allApplicableGradeEntities: classMaster[] = await getEntitySearch({ entityType: 'class', filters: { identifier: allApplicableGradeIds } });
-    const allApplicableGrades = allApplicableGradeEntities.map((grade) => grade.id);
     /**
      * If not a fresh user
      */
     if (learnerJourney) {
       const learnerJourneyQuestionSet = await getQuestionSetById(learnerJourney.question_set_id);
-      if (learnerJourneyQuestionSet!.purpose !== QuestionSetPurposeType.MAIN_DIAGNOSTIC && learnerJourneyQuestionSet!.taxonomy.l1_skill.id === skillId) {
+      if (learnerJourneyQuestionSet!.purpose !== QuestionSetPurposeType.MAIN_DIAGNOSTIC && learnerJourneyQuestionSet!.taxonomy.l1_skill.identifier === skillIdentifier) {
         const nextPracticeQuestionSet = await getNextPracticeQuestionSetInSequence({
-          boardId: learnerJourneyQuestionSet!.taxonomy.board.id,
-          classIds: allApplicableGrades,
-          l1SkillId: learnerJourneyQuestionSet!.taxonomy.l1_skill.id,
+          boardId: learnerJourneyQuestionSet!.taxonomy.board.identifier,
+          classIds: allApplicableGradeIds,
+          l1SkillId: learnerJourneyQuestionSet!.taxonomy.l1_skill.identifier,
           lastSetSequence: learnerJourneyQuestionSet!.sequence,
         });
 
@@ -108,15 +105,16 @@ const evaluateLearner = async (req: Request, res: Response) => {
      * last attempted question set purpose is MD OR
      * no more practice question sets are available for the current skill
      */
-    const mainDiagnosticQS = await getMainDiagnosticQuestionSet({ boardId: learnerBoardId, classId: highestApplicableGrade.id, l1SkillId: skillId });
+    const mainDiagnosticQS = await getMainDiagnosticQuestionSet({ boardId: boardEntity?.[0]?.identifier, classId: highestApplicableGradeMapping.identifier, l1SkillId: skillIdentifier });
+
     const { learnerJourney: learnerJourneyForMDQS } = await readLearnerJourneyByLearnerIdAndQuestionSetId(learner_id, mainDiagnosticQS.identifier);
     if (_.isEmpty(learnerJourneyForMDQS)) {
       questionSetId = mainDiagnosticQS.identifier;
       break;
     }
 
-    let lowestApplicableGradeForPractice = -1;
-    for (const grade of allApplicableGrades) {
+    let lowestApplicableGradeForPractice = '';
+    for (const grade of allApplicableGradeIds) {
       const learnerAggregateData = await findAggregateData({ learner_id, class_id: grade });
       if (learnerAggregateData && learnerAggregateData?.score < PASSING_MARKS) {
         lowestApplicableGradeForPractice = grade;
@@ -125,7 +123,7 @@ const evaluateLearner = async (req: Request, res: Response) => {
     }
 
     if (lowestApplicableGradeForPractice) {
-      const practiceQuestionSet = await getPracticeQuestionSet({ boardId: learnerBoardId, classId: lowestApplicableGradeForPractice, l1SkillId: skillId });
+      const practiceQuestionSet = await getPracticeQuestionSet({ boardId: learnerBoardId, classId: lowestApplicableGradeForPractice, l1SkillId: skillIdentifier });
       if (practiceQuestionSet) {
         questionSetId = practiceQuestionSet.identifier;
         break;

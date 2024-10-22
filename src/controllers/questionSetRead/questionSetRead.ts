@@ -5,7 +5,7 @@ import httpStatus from 'http-status';
 import { getQuestionSetByIdAndStatus } from '../../services/questionSet';
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
-import { getAllQuestionsById } from '../../services/question';
+import { getAllQuestionsByIdentifiers } from '../../services/question';
 
 export const apiId = 'api.questionSet.read';
 
@@ -23,9 +23,9 @@ const readQuestionSetById = async (req: Request, res: Response) => {
     throw amlError(code, 'Question Set not exists', 'NOT_FOUND', 404);
   }
 
-  const questionIds = questionSetDetails.questions.map((q: { id: any }) => q.id);
+  const questionIds = questionSetDetails.questions.map((q: { identifier: any }) => q.identifier);
 
-  const questionsDetails = await getAllQuestionsById(questionIds);
+  const questionsDetails = await getAllQuestionsByIdentifiers(questionIds);
 
   // Create a map of questions by their identifier for easy lookup
   const questionsMap = new Map(questionsDetails.map((q: { identifier: any }) => [q.identifier, q]));

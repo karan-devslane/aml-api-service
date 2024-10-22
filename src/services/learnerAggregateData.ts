@@ -2,10 +2,10 @@ import { LearnerProficiencyAggregateData } from '../models/learnerProficiencyAgg
 
 export const findAggregateData = async (filters: {
   learner_id?: string;
-  class_id?: number;
-  l1_skill_id?: number;
-  l2_skill_id?: number;
-  l3_skill_id?: number;
+  class_id?: string;
+  l1_skill_id?: string;
+  l2_skill_id?: string;
+  l3_skill_id?: string;
 }): Promise<LearnerProficiencyAggregateData | null> => {
   return LearnerProficiencyAggregateData.findOne({
     where: { ...filters },

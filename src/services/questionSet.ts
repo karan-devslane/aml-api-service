@@ -143,7 +143,7 @@ export const getQuestionSetsByIdentifiers = async (identifiers: string[]): Promi
   });
 };
 
-export const getMainDiagnosticQuestionSet = async (filters: { boardId?: number; classId?: number; l1SkillId?: number }): Promise<any> => {
+export const getMainDiagnosticQuestionSet = async (filters: { boardId?: string; classId?: string; l1SkillId?: string }): Promise<any> => {
   let whereClause: any = {
     purpose: QuestionSetPurposeType.MAIN_DIAGNOSTIC,
   };
@@ -154,7 +154,7 @@ export const getMainDiagnosticQuestionSet = async (filters: { boardId?: number; 
       taxonomy: {
         ...(whereClause.taxonomy || {}),
         board: {
-          id: filters.boardId,
+          identifier: filters.boardId,
         },
       },
     };
@@ -166,7 +166,7 @@ export const getMainDiagnosticQuestionSet = async (filters: { boardId?: number; 
       taxonomy: {
         ...(whereClause.taxonomy || {}),
         class: {
-          id: filters.classId,
+          identifier: filters.classId,
         },
       },
     };
@@ -178,7 +178,7 @@ export const getMainDiagnosticQuestionSet = async (filters: { boardId?: number; 
       taxonomy: {
         ...(whereClause.taxonomy || {}),
         l1_skill: {
-          id: filters.l1SkillId,
+          identifier: filters.l1SkillId,
         },
       },
     };
@@ -191,20 +191,20 @@ export const getMainDiagnosticQuestionSet = async (filters: { boardId?: number; 
   });
 };
 
-export const getPracticeQuestionSet = (filters: { boardId: number; classId: number; l1SkillId: number }): Promise<any> => {
+export const getPracticeQuestionSet = (filters: { boardId: string; classId: string; l1SkillId: string }): Promise<any> => {
   const whereClause: any = {
     purpose: {
       [Op.ne]: QuestionSetPurposeType.MAIN_DIAGNOSTIC,
     },
     taxonomy: {
       board: {
-        id: filters.boardId,
+        identifier: filters.boardId,
       },
       class: {
-        id: filters.classId,
+        identifier: filters.classId,
       },
       l1_skill: {
-        id: filters.l1SkillId,
+        identifier: filters.l1SkillId,
       },
     },
   };
@@ -215,7 +215,7 @@ export const getPracticeQuestionSet = (filters: { boardId: number; classId: numb
   });
 };
 
-export const getNextPracticeQuestionSetInSequence = (filters: { boardId: number; classIds: number[]; l1SkillId: number; lastSetSequence: number }): Promise<any> => {
+export const getNextPracticeQuestionSetInSequence = (filters: { boardId: string; classIds: string[]; l1SkillId: string; lastSetSequence: number }): Promise<any> => {
   const whereClause: any = {
     sequence: {
       [Op.gt]: filters.lastSetSequence,
@@ -225,13 +225,15 @@ export const getNextPracticeQuestionSetInSequence = (filters: { boardId: number;
     },
     taxonomy: {
       board: {
-        id: filters.boardId,
+        identifier: filters.boardId,
       },
       class: {
-        id: filters.classIds,
+        identifier: {
+          [Op.in]: filters.classIds,
+        },
       },
       l1_skill: {
-        id: filters.l1SkillId,
+        identifier: filters.l1SkillId,
       },
     },
   };

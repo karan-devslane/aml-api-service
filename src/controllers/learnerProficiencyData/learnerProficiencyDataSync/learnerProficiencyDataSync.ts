@@ -187,12 +187,13 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
     const end_time = _.get(questionSetTimestampMap, [questionSet.identifier, 'end_time']);
     const { learnerJourney } = await readLearnerJourneyByLearnerIdAndQuestionSetId(learner_id, questionSet.identifier);
     const completedQuestionIds = attemptedQuestions.map((data) => data.question_id);
+    const journeyStatus = totalQuestionsCount === attemptedQuestions.length && allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS;
     if (_.isEmpty(learnerJourney)) {
       const payload = {
         identifier: uuid.v4(),
         learner_id,
         question_set_id: questionSet.identifier,
-        status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
+        status: journeyStatus,
         completed_question_ids: completedQuestionIds,
         created_by: learner_id,
       };
@@ -205,7 +206,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
       await createLearnerJourney(payload);
     } else {
       const payload = {
-        status: allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS,
+        status: journeyStatus,
         completed_question_ids: completedQuestionIds,
         attempts_count: allQuestionsHaveEqualNumberOfAttempts ? learnerJourney?.attempts_count + 1 : learnerJourney.attempts_count,
         updated_by: learner_id,
