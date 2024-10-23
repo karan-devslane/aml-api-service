@@ -12,7 +12,6 @@ import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 
-
 const { envPort } = appConfiguration;
 
 // PostgreSQL connection
@@ -98,7 +97,7 @@ const initializeServer = (): void => {
     // CSRF protection middleware
     const csrfProtection = csrf({ cookie: true });
     app.use(csrfProtection);
-    
+
     // Router
     app.use('/api/v1', router);
 
