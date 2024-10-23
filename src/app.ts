@@ -10,6 +10,8 @@ import pg from 'pg';
 import ConnectPgSimple from 'connect-pg-simple';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+
 
 const { envPort } = appConfiguration;
 
@@ -90,14 +92,21 @@ const initializeServer = (): void => {
       }),
     );
 
+    // static route
+    app.use(express.static(path.join(__dirname, 'dist')));
+
     // CSRF protection middleware
     const csrfProtection = csrf({ cookie: true });
     app.use(csrfProtection);
-
+    
     // Router
     app.use('/api/v1', router);
 
     app.use(amlErrorHandler);
+
+    app.get('*', function (req, res) {
+      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    });
 
     // 404 handler for unknown API requests
     app.use((req: Request, res: Response, next: NextFunction) => {
@@ -106,7 +115,7 @@ const initializeServer = (): void => {
 
     // Start the server
     app.listen(envPort, () => {
-      logger.info(`Listening on port.`);
+      logger.info(`Listening on port. ${envPort}`);
     });
 
     // Handle uncaught exceptions and unhandled rejections
