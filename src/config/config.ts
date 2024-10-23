@@ -28,6 +28,12 @@ const appConfiguration: IConfiguration = {
   bulkUploadFolder: get(envVars, 'UPLOAD_FOLDER', 'upload'),
   templateFolder: get(envVars, 'TEMPLATE_FOLDER', 'template'),
   mediaFolder: get(envVars, 'MEDIA_FOLDER', 'media'),
+  aws: {
+    secretKey: get(envVars, 'AML_AWS_SECRET_KEY', ''),
+    accessKey: get(envVars, 'AML_AWS_ACCESS_KEY', ''),
+    bucketRegion: get(envVars, 'AWL_AWS_BUCKET_REGION', 'us-east-1'),
+    bucketOutput: get(envVars, 'AWL_AWS_BUCKET_OUTPUT', 'table'),
+  },
 };
 
 export default appConfiguration;

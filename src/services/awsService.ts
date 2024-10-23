@@ -2,9 +2,18 @@ import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { appConfiguration } from '../config';
 
-const { bucketName, presignedUrlExpiry } = appConfiguration;
+const {
+  bucketName,
+  presignedUrlExpiry,
+  aws: { accessKey, secretKey },
+} = appConfiguration;
 
-const s3Client = new S3Client();
+const s3Client = new S3Client({
+  credentials: {
+    secretAccessKey: secretKey,
+    accessKeyId: accessKey,
+  },
+});
 
 export const getPresignedUrl = async (fileName: string) => {
   const command = new GetObjectCommand({
