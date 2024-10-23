@@ -5,10 +5,11 @@ import { appConfiguration } from '../config';
 const {
   bucketName,
   presignedUrlExpiry,
-  aws: { accessKey, secretKey },
+  aws: { accessKey, secretKey, bucketRegion },
 } = appConfiguration;
 
 const s3Client = new S3Client({
+  region: bucketRegion,
   credentials: {
     secretAccessKey: secretKey,
     accessKeyId: accessKey,
