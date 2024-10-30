@@ -11,6 +11,7 @@ import ConnectPgSimple from 'connect-pg-simple';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import path from 'path';
+import RateLimit from 'express-rate-limit';
 
 const { envPort } = appConfiguration;
 
@@ -87,6 +88,12 @@ const initializeServer = (): void => {
       }),
     );
 
+    const limiter = RateLimit({
+      windowMs: 60 * 1000, // 1 minute
+      limit: 100, // max 100 requests per windowMs
+    });
+    app.use(limiter);
+
     // static route
     app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -99,7 +106,7 @@ const initializeServer = (): void => {
 
     app.use(amlErrorHandler);
 
-    app.get('*', function (req, res) {
+    app.get(/.*/, function (req, res) {
       res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     });
 
