@@ -148,10 +148,11 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
   for (const questionSet of questionSets) {
     const totalQuestionsCount = (questionSet.questions || []).length;
     const attemptedQuestions = await getRecordsForLearnerByQuestionSetId(learner_id, questionSet.identifier);
-    const allQuestionsHaveEqualNumberOfAttempts = attemptedQuestions.every((question: { attempts_count: number }) => question.attempts_count === (attemptedQuestions?.[0]?.attempts_count || 0));
-    if (totalQuestionsCount === attemptedQuestions.length && totalQuestionsCount > 0 && allQuestionsHaveEqualNumberOfAttempts) {
-      const avgScore = calculateAverageScoreForQuestionSet(attemptedQuestions);
-      const subSkillScores = calculateSubSkillScoresForQuestionSet(attemptedQuestions);
+    const highestAttemptCount = attemptedQuestions?.[0]?.attempts_count || 0;
+    const questionsAttemptedInCurrentAttempt = attemptedQuestions.filter((data) => data.attempts_count === highestAttemptCount);
+    if (totalQuestionsCount === questionsAttemptedInCurrentAttempt.length && totalQuestionsCount > 0) {
+      const avgScore = calculateAverageScoreForQuestionSet(questionsAttemptedInCurrentAttempt);
+      const subSkillScores = calculateSubSkillScoresForQuestionSet(questionsAttemptedInCurrentAttempt);
       /**
        * If an entry already exists for the (learner_id, question_set_id) pair, then we increment the attempt count
        */
@@ -186,8 +187,8 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
     const start_time = _.get(questionSetTimestampMap, [questionSet.identifier, 'start_time']);
     const end_time = _.get(questionSetTimestampMap, [questionSet.identifier, 'end_time']);
     const { learnerJourney } = await readLearnerJourneyByLearnerIdAndQuestionSetId(learner_id, questionSet.identifier);
-    const completedQuestionIds = attemptedQuestions.map((data) => data.question_id);
-    const journeyStatus = totalQuestionsCount === attemptedQuestions.length && allQuestionsHaveEqualNumberOfAttempts ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS;
+    const completedQuestionIds = questionsAttemptedInCurrentAttempt.map((data) => data.question_id);
+    const journeyStatus = totalQuestionsCount === questionsAttemptedInCurrentAttempt.length ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS;
     if (_.isEmpty(learnerJourney)) {
       const payload = {
         identifier: uuid.v4(),
@@ -208,7 +209,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
       const payload = {
         status: journeyStatus,
         completed_question_ids: completedQuestionIds,
-        attempts_count: allQuestionsHaveEqualNumberOfAttempts ? learnerJourney?.attempts_count + 1 : learnerJourney.attempts_count,
+        attempts_count: totalQuestionsCount === questionsAttemptedInCurrentAttempt.length && highestAttemptCount > learnerJourney?.attempts_count ? highestAttemptCount : learnerJourney.attempts_count,
         updated_by: learner_id,
       };
       if (start_time) {
