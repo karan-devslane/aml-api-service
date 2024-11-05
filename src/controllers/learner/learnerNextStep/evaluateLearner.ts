@@ -129,6 +129,15 @@ const evaluateLearner = async (req: Request, res: Response) => {
         break;
       }
     }
+
+    // TODO: Remove later
+    if (!lowestApplicableGradeForPractice) {
+      const practiceQuestionSet = await getPracticeQuestionSet({ boardId: learnerBoardId, classId: highestApplicableGradeMapping.identifier, l1SkillId: skillIdentifier });
+      if (practiceQuestionSet) {
+        questionSetId = practiceQuestionSet.identifier;
+        break;
+      }
+    }
   }
 
   ResponseHandler.successResponse(req, res, {
