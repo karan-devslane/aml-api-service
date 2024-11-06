@@ -38,6 +38,7 @@ export const getRecordsForLearnerByQuestionSetId = async (learnerId: string, que
   return LearnerProficiencyQuestionLevelData.findAll({
     where: { learner_id: learnerId, question_set_id: questionSetId },
     raw: true,
+    order: [['attempts_count', 'DESC']],
   });
 };
 
