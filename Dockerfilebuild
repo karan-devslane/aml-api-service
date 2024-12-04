@@ -7,7 +7,7 @@ ENV VITE_REACT_APP_ENV=${VITE_REACT_APP_ENV}
 ENV VITE_SENTRY_DSN=${VITE_SENTRY_DSN}
 
 WORKDIR /app
-RUN git clone -b hotfix-changes https://github.com/Assisted-Math-Learning/aml-portal.git
+RUN git clone -b develop https://github.com/Assisted-Math-Learning/aml-portal.git
 RUN cd /app/aml-portal
 
 
