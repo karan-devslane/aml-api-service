@@ -1,4 +1,4 @@
-import { Op, Optional } from 'sequelize';
+import { Op, Optional, Sequelize } from 'sequelize';
 import { Status } from '../enums/status';
 import { Repository } from '../models/repository';
 import _ from 'lodash';
@@ -97,4 +97,65 @@ export const getRepositoryList = async (req: Record<string, any>) => {
 
   const repositories = await Repository.findAll({ limit: limit || DEFAULT_LIMIT, offset: offset || 0, ...(whereClause && { where: whereClause }), attributes: { exclude: ['id'] } });
   return repositories;
+};
+
+// list repositories by ids
+export const getRepositoryListByIds = async (req: Record<string, any>, repository_identifiers?: string[]) => {
+  const limit: any = _.get(req, 'limit');
+  const offset: any = _.get(req, 'offset');
+  const searchQuery: any = _.get(req, 'search_query');
+  const status: any = _.get(req, 'status');
+  const is_active: any = _.get(req, 'is_active');
+
+  let whereClause: any = {};
+
+  if (status) {
+    whereClause.status = status;
+  }
+
+  if (is_active) {
+    whereClause.is_active = is_active;
+  }
+
+  if (repository_identifiers && repository_identifiers.length > 0) {
+    whereClause.identifier = {
+      [Op.in]: repository_identifiers,
+    };
+  }
+
+  if (searchQuery) {
+    whereClause = {
+      ...whereClause,
+      [Op.or]: [
+        Sequelize.literal(`
+        EXISTS (
+          SELECT 1
+          FROM jsonb_each_text(name) AS kv
+      WHERE LOWER(kv.value) LIKE '%${searchQuery.toLowerCase()}%'
+        )
+      `),
+        Sequelize.literal(`
+        EXISTS (
+          SELECT 1
+          FROM jsonb_each_text(description) AS kv
+      WHERE LOWER(kv.value) LIKE '%${searchQuery.toLowerCase()}%'
+        )
+      `),
+      ],
+    };
+  }
+
+  const finalLimit = limit || DEFAULT_LIMIT;
+  const finalOffset = offset || 0;
+
+  const { rows, count } = await Repository.findAndCountAll({ where: whereClause, limit: finalLimit, offset: finalOffset });
+
+  return {
+    repositories: rows,
+    meta: {
+      offset: finalOffset,
+      limit: finalLimit,
+      total: count,
+    },
+  };
 };
