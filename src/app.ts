@@ -9,8 +9,9 @@ import cookieParser from 'cookie-parser';
 import path from 'path';
 import RateLimit from 'express-rate-limit';
 import { cronProvider } from './providers/cron.provider';
+import { AppEnv } from './enums/appEnv';
 
-const { envPort } = appConfiguration;
+const { envPort, applicationEnv } = appConfiguration;
 
 const app: Application = express();
 
@@ -35,6 +36,13 @@ const exitHandler = (): void => {
   }
 };
 
+const getSubdomainByEnv = (): string => {
+  if (applicationEnv === AppEnv.DEVELOPMENT) {
+    return 'dev.';
+  }
+  return '';
+};
+
 const initializeServer = (): void => {
   try {
     // Middleware for parsing JSON request body
@@ -46,6 +54,24 @@ const initializeServer = (): void => {
     // Middleware to enable CORS
     app.use(
       cors({
+        origin: (origin, callback) => {
+          // NOTE: hardcoded for now, will be changed to env variable later
+          const devOrigins = [
+            'http://localhost:5173', // For local
+            'http://localhost:5174', // For local
+          ];
+
+          const allOrigins = [
+            ...(applicationEnv === AppEnv.DEVELOPMENT ? devOrigins : []),
+            `https://${getSubdomainByEnv()}portal.theaml.ai`, // For FE
+            `https://dashboard.${getSubdomainByEnv()}portal.theaml.ai`, // For dashboard BE
+          ];
+          if (!origin || allOrigins.includes(origin)) {
+            callback(null, true);
+          } else {
+            callback(new Error('Not allowed by CORS'));
+          }
+        },
         credentials: true,
       }),
     );
