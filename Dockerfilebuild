@@ -12,16 +12,16 @@ RUN cd /app/aml-portal
 
 
 FROM --platform=linux/amd64 node:20-alpine
+
+ARG TELEMETRY_BASE_URL
+ENV VITE_TELEMETRY_SERVICE_BASE_URL=${TELEMETRY_BASE_URL}
+
 RUN apk add --no-cache postgresql-client
 RUN mkdir -p /opt/api-service/portal/dist
 RUN mkdir -p /opt/api-service/dist
 COPY --from=clone /app/aml-portal /opt/api-service/portal
 WORKDIR /opt/api-service/portal
 RUN ls -lah
-RUN echo $VITE_REACT_APP_ENV
-RUN echo $VITE_SENTRY_DSN
-RUN echo $VITE_REACT_APP_ENV >> .env
-RUN echo $VITE_SENTRY_DSN >> .env
 RUN npm install
 RUN npm run build
 RUN cp -r /opt/api-service/portal/dist /opt/api-service/dist

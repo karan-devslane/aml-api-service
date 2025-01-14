@@ -29,3 +29,4 @@ jobs:
           build-args: |
             VITE_REACT_APP_ENV=develop
             VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            TELEMETRY_BASE_URL=${{ secrets.TELEMETRY_BASE_URL }}
