@@ -143,6 +143,12 @@ export const searchQuestions = async (req: Request, res: Response) => {
           _.set(sub_skills, skill.identifier, skill);
         }
       }
+      if (filters.question_set_id) {
+        const questionSet = await questionSetService.getQuestionSetByIdAndStatus(filters.question_set_id);
+        if (questionSet) {
+          questionSets.push(questionSet);
+        }
+      }
     }
   }
 
