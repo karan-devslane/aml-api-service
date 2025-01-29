@@ -3,25 +3,13 @@ import { ResponseHandler } from '../../utils/responseHandler';
 import httpStatus from 'http-status';
 import * as _ from 'lodash';
 import { amlError } from '../../types/amlError';
-import papaparse from 'papaparse';
-import appRootPath from 'app-root-path';
-import path from 'path';
-import fs from 'node:fs';
 import { AppDataSource } from '../../config';
 import { QuestionSet } from '../../models/questionSet';
 import { Op } from 'sequelize';
 import { Content } from '../../models/content';
 import { Question } from '../../models/question';
 import { QuestionSetQuestionMapping } from '../../models/questionSetQuestionMapping';
-
-const getCSVEntries = (csvFile: any) => {
-  const filePath = path.join(appRootPath.path, 'temporary', `data.csv`);
-  fs.writeFileSync(filePath, csvFile.data);
-  const localCSVFile = fs.readFileSync(filePath, 'utf-8');
-  const csvRows = papaparse.parse(localCSVFile)?.data;
-  fs.unlinkSync(filePath);
-  return csvRows as string[][];
-};
+import { getCSVEntries } from './helper';
 
 const updateQuestionSetXId = async (req: Request, res: Response) => {
   const csvFile = _.get(req, ['files', 'document'], {});

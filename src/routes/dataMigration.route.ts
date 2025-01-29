@@ -4,6 +4,8 @@ import createQuestionSetQuestionMapping from '../controllers/dataMigrations/crea
 import updateQuestionSetXId from '../controllers/dataMigrations/updateQuestionSetXId';
 import standardiseMediaKeys from '../controllers/dataMigrations/standardiseMediaKeys';
 import updateGrid1MetaData from '../controllers/dataMigrations/updateGrid1MetaData';
+import createSections from '../controllers/dataMigrations/createSections';
+import updateLearnerNamesAndSchool from '../controllers/dataMigrations/updateLearnerNamesAndSchool';
 
 export const dataMigrations = express.Router();
 
@@ -16,3 +18,7 @@ dataMigrations.post('/update-qs-x_id', updateQuestionSetXId);
 dataMigrations.post('/media-keys-fix', standardiseMediaKeys);
 
 dataMigrations.post('/grid-1-metadata', updateGrid1MetaData);
+
+dataMigrations.post('/create-sections', createSections);
+
+dataMigrations.post('/update-learner-names-and-school', updateLearnerNamesAndSchool);
