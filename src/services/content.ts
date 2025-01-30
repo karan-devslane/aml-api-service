@@ -58,9 +58,8 @@ export const getContentByIds = async (ids: string[]): Promise<any> => {
 };
 
 // Publish content by id
-export const publishContentById = async (id: string): Promise<any> => {
-  const contentDetails = await Content.update({ status: Status.LIVE }, { where: { identifier: id }, returning: true });
-  return { contentDetails };
+export const publishContentById = async (id: string, updatedBy: string): Promise<any> => {
+  return Content.update({ status: Status.LIVE, updated_by: updatedBy }, { where: { identifier: id }, returning: true });
 };
 
 // Update content by identifier

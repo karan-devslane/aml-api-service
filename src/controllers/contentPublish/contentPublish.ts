@@ -6,6 +6,9 @@ import { getContentById, publishContentById } from '../../services/content';
 import { amlError } from '../../types/amlError';
 import { Status } from '../../enums/status';
 import { ResponseHandler } from '../../utils/responseHandler';
+import { User } from '../../models/users';
+import { getUserByIdentifier } from '../../services/user';
+import { UserTransformer } from '../../transformers/entity/user.transformer';
 
 export const apiId = 'api.content.publish';
 
@@ -13,6 +16,7 @@ const publishContent = async (req: Request, res: Response) => {
   const contentId = _.get(req, 'params.content_id');
   const msgid = _.get(req, ['body', 'params', 'msgid']);
   const resmsgid = _.get(res, 'resmsgid');
+  const loggedInUser: User | undefined = (req as any).user;
 
   // Fetch the content details
   const contentDetails = await getContentById(contentId, { status: Status.DRAFT });
@@ -25,14 +29,14 @@ const publishContent = async (req: Request, res: Response) => {
   }
 
   // Publish the content
-  await publishContentById(contentId);
+  const [, affectedRows] = await publishContentById(contentId, loggedInUser!.identifier);
 
-  // Log success
+  const createdByUser = await getUserByIdentifier(affectedRows?.[0]?.created_by);
+
+  const users = new UserTransformer().transformList(_.uniqBy([createdByUser, loggedInUser], 'identifier').filter((v) => !!v));
+
   logger.info({ apiId, contentId, message: 'Content published successfully' });
-
-  // Send success response
-
-  ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Content successfully published' } });
+  ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Content successfully published', content: affectedRows?.[0] ?? {}, users } });
 };
 
 export default publishContent;
