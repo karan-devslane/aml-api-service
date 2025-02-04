@@ -2393,3 +2393,10 @@ CREATE TABLE IF NOT EXISTS audio_stage (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+
+-------------------------------------------------------
+-- Adding audio_description in question_stage table --
+-------------------------------------------------------
+
+ALTER TABLE question_stage ADD COLUMN question_audio_description JSONB;
