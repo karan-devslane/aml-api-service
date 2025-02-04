@@ -6,6 +6,7 @@ import standardiseMediaKeys from '../controllers/dataMigrations/standardiseMedia
 import updateGrid1MetaData from '../controllers/dataMigrations/updateGrid1MetaData';
 import createSections from '../controllers/dataMigrations/createSections';
 import updateLearnerNamesAndSchool from '../controllers/dataMigrations/updateLearnerNamesAndSchool';
+import updateQuestionAudioDescription from '../controllers/dataMigrations/updateQuestionAudioDescription';
 
 export const dataMigrations = express.Router();
 
@@ -22,3 +23,5 @@ dataMigrations.post('/grid-1-metadata', updateGrid1MetaData);
 dataMigrations.post('/create-sections', createSections);
 
 dataMigrations.post('/update-learner-names-and-school', updateLearnerNamesAndSchool);
+
+dataMigrations.post('/update-audio-description', updateQuestionAudioDescription);
