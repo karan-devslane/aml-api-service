@@ -107,7 +107,7 @@ export const getContentList = async (req: {
   const limit: number = _.get(req, 'limit', DEFAULT_LIMIT);
   const offset: number = _.get(req, 'offset', 0);
   const { filters = {}, sort_by } = req || {};
-  const searchQuery: string = _.get(req, 'search_query', '');
+  const searchQuery: string = _.get(filters, 'search_query', '');
 
   let whereClause: any = {
     is_active: true,
