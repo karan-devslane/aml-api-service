@@ -7,6 +7,8 @@ import updateGrid1MetaData from '../controllers/dataMigrations/updateGrid1MetaDa
 import createSections from '../controllers/dataMigrations/createSections';
 import updateLearnerNamesAndSchool from '../controllers/dataMigrations/updateLearnerNamesAndSchool';
 import updateQuestionAudioDescription from '../controllers/dataMigrations/updateQuestionAudioDescription';
+import generateAudioForDescriptions from '../controllers/dataMigrations/generateAudioForDescriptions';
+import createAudioQuestionMapping from '../controllers/dataMigrations/createAudioQuestionMapping';
 
 export const dataMigrations = express.Router();
 
@@ -25,3 +27,7 @@ dataMigrations.post('/create-sections', createSections);
 dataMigrations.post('/update-learner-names-and-school', updateLearnerNamesAndSchool);
 
 dataMigrations.post('/update-audio-description', updateQuestionAudioDescription);
+
+dataMigrations.post('/generate-audio-for-descriptions', generateAudioForDescriptions);
+
+dataMigrations.post('/create-audio-question-mapping', createAudioQuestionMapping);
