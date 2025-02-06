@@ -32,7 +32,7 @@ const leanerJourneyLatestResponseById = async (req: Request, res: Response) => {
   const questionSetId = learnerJourney.question_set_id;
   const completedQuestionIds = learnerJourney.completed_question_ids;
 
-  const learnerProficiencyQuestionLevelData = await getRecordsForLearnerByQuestionSetId(learnerId, questionSetId);
+  const learnerProficiencyQuestionLevelData = await getRecordsForLearnerByQuestionSetId(learnerId, questionSetId, learnerJourney.attempt_number);
 
   const learnerResponses = learnerProficiencyQuestionLevelData
     .filter((datum: any) => {

@@ -2400,3 +2400,16 @@ CREATE TABLE IF NOT EXISTS audio_stage (
 -------------------------------------------------------
 
 ALTER TABLE question_stage ADD COLUMN question_audio_description JSONB;
+
+
+-------------------------------------------------------
+-- Adding attempt_number column --
+-------------------------------------------------------
+
+ALTER TABLE learner_journey ADD COLUMN attempt_number integer default 1 not null;
+ALTER TABLE learner_proficiency_question_level_data ADD COLUMN attempt_number integer default 1 not null;
+ALTER TABLE learner_proficiency_question_set_level_data ADD COLUMN attempt_number integer default 1 not null;
+
+ALTER TABLE learner_journey drop column attempts_count;
+ALTER TABLE learner_proficiency_question_level_data drop column attempts_count;
+ALTER TABLE learner_proficiency_question_set_level_data drop column attempts_count;

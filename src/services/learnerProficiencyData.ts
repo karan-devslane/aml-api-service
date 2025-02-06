@@ -6,6 +6,7 @@ import { LearnerProficiencyQuestionSetLevelData } from '../models/learnerProfici
 export const getQuestionLevelDataByLearnerIdQuestionIdAndQuestionSetId = async (learnerId: string, questionId: string, questionSetId: string): Promise<LearnerProficiencyQuestionLevelData | null> => {
   return LearnerProficiencyQuestionLevelData.findOne({
     where: { learner_id: learnerId, question_id: questionId, question_set_id: questionSetId },
+    order: [['attempt_number', 'desc']],
     raw: true,
   });
 };
@@ -34,11 +35,10 @@ export const readLearnerAggregateData = async (learnerId: string): Promise<{ lea
   return { learnerAggregateData };
 };
 
-export const getRecordsForLearnerByQuestionSetId = async (learnerId: string, questionSetId: string): Promise<LearnerProficiencyQuestionLevelData[]> => {
+export const getRecordsForLearnerByQuestionSetId = async (learnerId: string, questionSetId: string, attempt_number: number): Promise<LearnerProficiencyQuestionLevelData[]> => {
   return LearnerProficiencyQuestionLevelData.findAll({
-    where: { learner_id: learnerId, question_set_id: questionSetId },
+    where: { learner_id: learnerId, question_set_id: questionSetId, attempt_number },
     raw: true,
-    order: [['attempts_count', 'DESC']],
   });
 };
 

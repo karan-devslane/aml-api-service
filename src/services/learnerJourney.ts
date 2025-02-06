@@ -28,6 +28,7 @@ export const readLearnerJourneyByLearnerIdAndQuestionSetId = async (learnerId: s
   const learnerJourney = await LearnerJourney.findOne({
     where: { learner_id: learnerId, question_set_id: questionSetId },
     attributes: { exclude: ['id'] },
+    order: [['attempt_number', 'desc']],
   });
 
   return { learnerJourney };
