@@ -10,7 +10,7 @@ export class LearnerProficiencyQuestionSetLevelData extends Model {
   declare taxonomy: Taxonomy;
   declare sub_skills: { [skillId: number]: number };
   declare score: number;
-  declare attempts_count: number;
+  declare attempt_number: number;
   declare created_by: string;
   declare updated_by: string;
 }
@@ -47,7 +47,7 @@ LearnerProficiencyQuestionSetLevelData.init(
       type: DataTypes.DECIMAL,
       allowNull: false,
     },
-    attempts_count: {
+    attempt_number: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 1,

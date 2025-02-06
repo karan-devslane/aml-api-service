@@ -11,7 +11,7 @@ export class LearnerJourney extends Model {
   declare status: LearnerJourneyStatus;
   declare start_time: Date;
   declare end_time: Date;
-  declare attempts_count: number;
+  declare attempt_number: number;
   declare created_by: string;
   declare updated_by: string;
 }
@@ -53,7 +53,7 @@ LearnerJourney.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
-    attempts_count: {
+    attempt_number: {
       type: DataTypes.NUMBER,
       allowNull: false,
       defaultValue: 1,
