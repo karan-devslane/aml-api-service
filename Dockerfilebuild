@@ -16,6 +16,9 @@ FROM --platform=linux/amd64 node:20-alpine
 ARG TELEMETRY_BASE_URL
 ENV VITE_TELEMETRY_SERVICE_BASE_URL=${TELEMETRY_BASE_URL}
 
+ARG CLARITY_PROJECT_ID
+ENV VITE_CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}
+
 RUN apk add --no-cache postgresql-client
 RUN mkdir -p /opt/api-service/portal/dist
 RUN mkdir -p /opt/api-service/dist

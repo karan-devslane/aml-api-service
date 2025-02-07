@@ -30,3 +30,4 @@ jobs:
             VITE_REACT_APP_ENV=develop
             VITE_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
             TELEMETRY_BASE_URL=${{ vars.TELEMETRY_BASE_URL }}
+            CLARITY_PROJECT_ID=${{ vars.CLARITY_PROJECT_ID }}
