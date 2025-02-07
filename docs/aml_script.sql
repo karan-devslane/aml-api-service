@@ -2413,3 +2413,9 @@ ALTER TABLE learner_proficiency_question_set_level_data ADD COLUMN attempt_numbe
 ALTER TABLE learner_journey drop column attempts_count;
 ALTER TABLE learner_proficiency_question_level_data drop column attempts_count;
 ALTER TABLE learner_proficiency_question_set_level_data drop column attempts_count;
+
+---------------------------------------
+-- Adding enable_clarity to tenant --
+---------------------------------------
+
+ALTER TABLE tenant ADD COLUMN enable_clarity BOOLEAN DEFAULT FALSE;

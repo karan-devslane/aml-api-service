@@ -1,7 +1,7 @@
 import { QueryInterface, DataTypes } from 'sequelize';
 
 const tableName = `tenant`;
-const columnName = `enable_telemetry`;
+const columnName = `enable_clarity`;
 
 export = {
   /**
