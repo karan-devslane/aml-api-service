@@ -19,6 +19,7 @@ import { dataMigrations } from './dataMigration.route';
 import ttsRouter from './entities/ttsRouter';
 import textTranslation from '../controllers/textTranslation/textTranslation';
 import { setDataToRequestObject } from '../middlewares/setDataToReqObj';
+import { learnerRouter } from './entities/learnerRouter';
 
 export const router = express.Router();
 
@@ -54,8 +55,9 @@ router.use('/migration', userAuth, dataMigrations);
 
 router.use('/tts', userAuth, ttsRouter);
 
-router.post('/translate', setDataToRequestObject('api.translate'), userAuth, textTranslation);
+router.use('/learner', userAuth, learnerRouter);
 
+router.post('/translate', setDataToRequestObject('api.translate'), userAuth, textTranslation);
 /**
  * ******************************
  * ***** AML PORTAL ROUTES ******

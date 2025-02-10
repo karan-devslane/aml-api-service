@@ -1,5 +1,5 @@
 import { Tenant } from '../models/tenant';
-import { Op, Optional } from 'sequelize';
+import { Op, Optional, Sequelize } from 'sequelize';
 import { UpdateTenant } from '../types/tenantModel';
 import _ from 'lodash';
 import { Status } from '../enums/status';
@@ -35,12 +35,27 @@ class TenantService {
     const limit: any = _.get(req, 'limit');
     const offset: any = _.get(req, 'offset');
     const { filters = {} } = req || {};
+    const searchQuery: any = _.get(req, 'search_query');
 
-    const whereClause: any = {};
+    let whereClause: any = {};
 
     whereClause.status = Status.LIVE;
     whereClause.is_active = true;
 
+    if (searchQuery) {
+      whereClause = {
+        ...whereClause,
+        [Op.or]: [
+          Sequelize.literal(`
+    EXISTS (
+      SELECT 1 
+      FROM jsonb_each_text(name) AS kv
+      WHERE LOWER(kv.value) LIKE '%${searchQuery.toLowerCase()}%'
+    )
+  `),
+        ],
+      };
+    }
     if (filters.name) {
       whereClause.name = {
         [Op.or]: filters.name.map((termObj: any) => {

@@ -8,7 +8,9 @@ import deleteRepositoryById from '../../controllers/repositoryDelete/repositoryD
 import discardRepositoryById from '../../controllers/repositoryDiscard/repositoryDiscard';
 import { searchRepositories } from '../../controllers/repositorySearch/repositorySearch';
 import listRepositories from '../../controllers/listRepositories/listRepositories';
-import { userAuth } from '../../middlewares/userAuth';
+import createRepositoryAssociation from '../../controllers/repositoryAssociationsCreate/repositoryAssociationsCreate';
+import deleteRepositoryAssociationById from '../../controllers/repositoryAssociationDelete/repositoryAssociationDelete';
+import repositoryAssociationsReadByRepositoryId from '../../controllers/repositoryAssociationsRead/repositoryAssociationsRead';
 
 const repositoryRouter = express.Router();
 
@@ -26,6 +28,12 @@ repositoryRouter.post('/discard/:repository_id', setDataToRequestObject('api.rep
 
 repositoryRouter.post('/search', setDataToRequestObject('api.repository.search'), searchRepositories);
 
-repositoryRouter.post('/list', setDataToRequestObject('api.repository.list'), userAuth, listRepositories);
+repositoryRouter.post('/list', setDataToRequestObject('api.repository.list'), listRepositories);
+
+repositoryRouter.get('/associations/read/:repository_id', setDataToRequestObject('api.repository.associations.read'), repositoryAssociationsReadByRepositoryId);
+
+repositoryRouter.post('/repository-associations', setDataToRequestObject('api.repository.associations.create'), createRepositoryAssociation);
+
+repositoryRouter.post('/delete/repository-associations/:identifier', setDataToRequestObject('api.repository.association.delete'), deleteRepositoryAssociationById);
 
 export default repositoryRouter;
