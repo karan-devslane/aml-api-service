@@ -2419,3 +2419,15 @@ ALTER TABLE learner_proficiency_question_set_level_data drop column attempts_cou
 ---------------------------------------
 
 ALTER TABLE tenant ADD COLUMN enable_clarity BOOLEAN DEFAULT FALSE;
+
+------------------------------------------------------------------
+-- Adding column identifier in repository_associations table --
+------------------------------------------------------------------
+
+ALTER TABLE repository_associations
+ADD COLUMN identifier VARCHAR(255);
+
+-- NOTE: Add identifiers in repository_associations table manually --
+
+ALTER TABLE repository_associations
+ADD CONSTRAINT repository_associations_identifier_unique UNIQUE (identifier);

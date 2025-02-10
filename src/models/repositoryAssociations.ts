@@ -4,6 +4,7 @@ import { AppDataSource } from '../config';
 export class RepositoryAssociation extends Model {
   declare id: number;
   declare repository_id: string;
+  declare identifier: string;
   declare tenant_id?: string | null;
   declare board_id?: string | null;
   declare learner_id?: string | null;
@@ -20,6 +21,11 @@ RepositoryAssociation.init(
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
+    },
+    identifier: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      comment: 'Unique identifier for the repository association',
     },
     repository_id: {
       type: DataTypes.STRING,

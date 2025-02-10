@@ -1,0 +1,54 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "enum": ["api.repository.associations.create"]
+    },
+    "ver": {
+      "type": "string"
+    },
+    "ts": {
+      "type": "string"
+    },
+    "params": {
+      "type": "object",
+      "properties": {
+        "msgid": {
+          "type": "string"
+        }
+      },
+      "required": ["msgid"],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "repository_id": { "type": "string", "minLength": 1 },
+        "board_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "nullable": true
+        },
+        "learner_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "nullable": true
+        },
+        "tenant_ids": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "nullable": true
+        }
+      },
+      "required": ["repository_id"],
+      "additionalProperties": false,
+      "oneOf": [{ "required": ["board_ids"] }, { "required": ["learner_ids"] }, { "required": ["tenant_ids"] }]
+    }
+  },
+  "required": ["id", "ver", "ts", "params", "request"],
+  "additionalProperties": false
+}
