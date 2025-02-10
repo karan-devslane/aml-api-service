@@ -27,8 +27,6 @@ router.use('/auth', userAuthRouter);
 
 router.use('/tenant', userAuth, tenantRouter);
 
-router.use('/learner', userAuth, learnerRouter);
-
 router.use('/master', userAuth, masterRouter);
 
 router.use('/bulk', userAuth, bulkUploadRouter);
@@ -56,6 +54,8 @@ router.use('/repository', userAuth, repositoryRouter);
 router.use('/migration', userAuth, dataMigrations);
 
 router.use('/tts', userAuth, ttsRouter);
+
+router.use('/learner', userAuth, learnerRouter);
 
 router.post('/translate', setDataToRequestObject('api.translate'), userAuth, textTranslation);
 /**
