@@ -13,6 +13,7 @@ export class LearnerProficiencyQuestionLevelData extends Model {
   declare learner_response: { result?: string; answerTop?: string; answerBottom?: string };
   declare score: number;
   declare attempt_number: number;
+  declare attempts_count: number;
   declare created_by: string;
   declare updated_by: string;
   declare created_at: Date;
@@ -58,6 +59,11 @@ LearnerProficiencyQuestionLevelData.init(
     score: {
       type: DataTypes.DECIMAL,
       allowNull: false,
+    },
+    attempts_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
     },
     attempt_number: {
       type: DataTypes.INTEGER,

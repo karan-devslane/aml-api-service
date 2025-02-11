@@ -11,6 +11,7 @@ export class LearnerProficiencyQuestionSetLevelData extends Model {
   declare sub_skills: { [skillId: number]: number };
   declare score: number;
   declare attempt_number: number;
+  declare attempts_count: number;
   declare created_by: string;
   declare updated_by: string;
 }
@@ -46,6 +47,11 @@ LearnerProficiencyQuestionSetLevelData.init(
     score: {
       type: DataTypes.DECIMAL,
       allowNull: false,
+    },
+    attempts_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
     },
     attempt_number: {
       type: DataTypes.INTEGER,

@@ -10,8 +10,11 @@ import {
   createLearnerProficiencyQuestionLevelData,
   createLearnerProficiencyQuestionSetLevelData,
   getQuestionLevelDataByLearnerIdQuestionIdAndQuestionSetId,
+  getQuestionLevelDataRecordsForLearner,
+  getQuestionSetLevelDataByLearnerIdAndQuestionSetId,
   getRecordsForLearnerByQuestionSetId,
   updateLearnerProficiencyQuestionLevelData,
+  updateLearnerProficiencyQuestionSetLevelData,
 } from '../../../services/learnerProficiencyData';
 import { questionSetService } from '../../../services/questionSetService';
 import { questionService } from '../../../services/questionService';
@@ -94,7 +97,6 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
   const transaction = await AppDataSource.transaction();
 
   const newLearnerAttempts: { [id: number]: LearnerProficiencyQuestionLevelData } = {};
-  let highestAttemptNumber = 1;
 
   try {
     /**
@@ -129,22 +131,20 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
       /**
        * If an entry already exists for the (learner_id, question_id, question_set_id) pair, then we increment the attempt count & update the new values
        */
-      let attempt_number = 1;
       const learnerDataExists = await getQuestionLevelDataByLearnerIdQuestionIdAndQuestionSetId(learner_id, question_id, question_set_id);
-      if (learnerDataExists && !_.isEmpty(learnerDataExists)) {
-        if (status === QuestionStatus.REVISITED) {
-          const updateData = {
-            learner_response,
-            sub_skills: subSkillScores,
-            score,
-            updated_by: learner_id,
-          };
-          await updateLearnerProficiencyQuestionLevelData(transaction, learnerDataExists.identifier, updateData);
-          _.set(newLearnerAttempts, learnerDataExists?.id, { ...learnerDataExists, ...updateData });
-          continue;
-        } else {
-          attempt_number = learnerDataExists.attempt_number + 1;
-        }
+      if (!_.isEmpty(learnerDataExists)) {
+        const updatedAttemptsCount = status === QuestionStatus.REVISITED ? learnerDataExists.attempts_count : learnerDataExists.attempts_count + 1;
+
+        const updateData = {
+          learner_response,
+          sub_skills: subSkillScores,
+          score,
+          attempts_count: updatedAttemptsCount,
+          updated_by: learner_id,
+        };
+        await updateLearnerProficiencyQuestionLevelData(transaction, learnerDataExists.identifier, updateData);
+        _.set(newLearnerAttempts, learnerDataExists?.id, { ...learnerDataExists, ...updateData });
+        continue;
       }
 
       const newData = await createLearnerProficiencyQuestionLevelData(transaction, {
@@ -156,11 +156,9 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
         sub_skills: subSkillScores,
         learner_response,
         score,
-        attempt_number,
         created_by: learner_id,
       });
       _.set(newLearnerAttempts, newData.dataValues.id, newData.dataValues);
-      highestAttemptNumber = attempt_number > highestAttemptNumber ? attempt_number : highestAttemptNumber;
     }
     logger.info(`[learnerProficiencyDataSync] msgid: ${msgid} timestamp: ${moment().format('DD-MM-YYYY hh:mm:ss')} action: question level data updated`);
 
@@ -174,7 +172,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
       const { learnerJourney } = await readLearnerJourneyByLearnerIdAndQuestionSetId(learner_id, questionSet.identifier);
       const pastAttemptedQuestions = learnerJourney && learnerJourney.status === LearnerJourneyStatus.IN_PROGRESS ? learnerJourney.completed_question_ids : [];
       const completedQuestionIds = _.uniq([...pastAttemptedQuestions, ...questionIds]);
-      const pastLearnerAttempts = await getRecordsForLearnerByQuestionSetId(learner_id, questionSet.identifier, highestAttemptNumber);
+      const pastLearnerAttempts = await getRecordsForLearnerByQuestionSetId(learner_id, questionSet.identifier);
       const unUpdatedExistingAttempts = pastLearnerAttempts
         .map((attempt) => {
           if (Object.prototype.hasOwnProperty.call(newLearnerAttempts, attempt.id)) {
@@ -184,20 +182,36 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
         })
         .filter((v) => !!v);
       const allAttemptedQuestionsOfThisQuestionSet = [...unUpdatedExistingAttempts, ...Object.values(newLearnerAttempts)];
-
+      const highestAttemptCount = Math.max(...allAttemptedQuestionsOfThisQuestionSet.map((data) => data?.attempts_count));
       if (totalQuestionsCount === completedQuestionIds.length && totalQuestionsCount > 0) {
         const avgScore = calculateAverageScoreForQuestionSet(allAttemptedQuestionsOfThisQuestionSet);
         const subSkillScores = calculateSubSkillScoresForQuestionSet(allAttemptedQuestionsOfThisQuestionSet);
-        await createLearnerProficiencyQuestionSetLevelData(transaction, {
-          identifier: uuid.v4(),
-          learner_id,
-          question_set_id: questionSet.identifier,
-          taxonomy: questionSet.taxonomy,
-          sub_skills: subSkillScores,
-          score: avgScore,
-          created_by: learner_id,
-          attempt_number: highestAttemptNumber,
-        });
+        /**
+         * If an entry already exists for the (learner_id, question_set_id) pair, then we increment the attempt count
+         */
+        const learnerDataExists = await getQuestionSetLevelDataByLearnerIdAndQuestionSetId(learner_id, questionSet.identifier);
+        if (!_.isEmpty(learnerDataExists)) {
+          const updateData = {
+            score: avgScore,
+            sub_skills: subSkillScores,
+            attempts_count: learnerDataExists.attempts_count + 1,
+            updated_by: learner_id,
+          };
+          await updateLearnerProficiencyQuestionSetLevelData(transaction, learnerDataExists.identifier, updateData);
+        } else {
+          /**
+           * If an entry does not exist for the (learner_id, question_set_id) pair, then we make an entry
+           */
+          await createLearnerProficiencyQuestionSetLevelData(transaction, {
+            identifier: uuid.v4(),
+            learner_id,
+            question_set_id: questionSet.identifier,
+            taxonomy: questionSet.taxonomy,
+            sub_skills: subSkillScores,
+            score: avgScore,
+            created_by: learner_id,
+          });
+        }
       }
 
       /**
@@ -206,14 +220,27 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
       const start_time = _.get(questionSetTimestampMap, [questionSet.identifier, 'start_time']);
       const end_time = _.get(questionSetTimestampMap, [questionSet.identifier, 'end_time']);
       const journeyStatus = totalQuestionsCount === completedQuestionIds.length ? LearnerJourneyStatus.COMPLETED : LearnerJourneyStatus.IN_PROGRESS;
-      if (learnerJourney && learnerJourney.status === LearnerJourneyStatus.IN_PROGRESS) {
-        if (learnerJourney.attempt_number !== highestAttemptNumber) {
-          const code = 'DUPLICATE_ATTEMPT_IN_EXISTING_LEARNER_JOURNEY';
-          throw amlError(code, 'Duplicate attempt in existing learner journey', 'BAD_REQUEST', 400);
+      if (_.isEmpty(learnerJourney)) {
+        const payload = {
+          identifier: uuid.v4(),
+          learner_id,
+          question_set_id: questionSet.identifier,
+          status: journeyStatus,
+          completed_question_ids: completedQuestionIds,
+          created_by: learner_id,
+        };
+        if (start_time) {
+          _.set(payload, 'start_time', start_time);
         }
+        if (end_time) {
+          _.set(payload, 'end_time', end_time);
+        }
+        await createLearnerJourney(transaction, payload);
+      } else {
         const payload = {
           status: journeyStatus,
           completed_question_ids: completedQuestionIds,
+          attempts_count: totalQuestionsCount === completedQuestionIds.length ? highestAttemptCount : learnerJourney.attempts_count,
           updated_by: learner_id,
           end_time: journeyStatus === LearnerJourneyStatus.IN_PROGRESS ? null : learnerJourney.end_time,
         };
@@ -224,23 +251,6 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
           _.set(payload, 'end_time', end_time);
         }
         await updateLearnerJourney(transaction, learnerJourney.identifier, payload);
-      } else {
-        const payload = {
-          identifier: uuid.v4(),
-          learner_id,
-          question_set_id: questionSet.identifier,
-          status: journeyStatus,
-          completed_question_ids: completedQuestionIds,
-          created_by: learner_id,
-          attempt_number: highestAttemptNumber,
-        };
-        if (start_time) {
-          _.set(payload, 'start_time', start_time);
-        }
-        if (end_time) {
-          _.set(payload, 'end_time', end_time);
-        }
-        await createLearnerJourney(transaction, payload);
       }
     }
     logger.info(`[learnerProficiencyDataSync] msgid: ${msgid} timestamp: ${moment().format('DD-MM-YYYY hh:mm:ss')} action: question set level data updated`);
@@ -250,7 +260,7 @@ const learnerProficiencyDataSync = async (req: Request, res: Response) => {
        * Updating grade/skill level data in the following block (only for Main Diagnostic Question Set)
        */
       logger.info(`[learnerProficiencyDataSync] msgid: ${msgid} timestamp: ${moment().format('DD-MM-YYYY hh:mm:ss')} action: reading learner attempts`);
-      const existingLearnerAttempts = await getRecordsForLearnerByQuestionSetId(learner_id, questionSets?.[0]?.identifier, highestAttemptNumber);
+      const existingLearnerAttempts = await getQuestionLevelDataRecordsForLearner(learner_id);
       logger.info(`[learnerProficiencyDataSync] msgid: ${msgid} timestamp: ${moment().format('DD-MM-YYYY hh:mm:ss')} action: learner attempts read`);
 
       const unUpdatedExistingAttempts = existingLearnerAttempts

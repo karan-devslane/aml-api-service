@@ -35,9 +35,9 @@ export const readLearnerAggregateData = async (learnerId: string): Promise<{ lea
   return { learnerAggregateData };
 };
 
-export const getRecordsForLearnerByQuestionSetId = async (learnerId: string, questionSetId: string, attempt_number: number): Promise<LearnerProficiencyQuestionLevelData[]> => {
+export const getRecordsForLearnerByQuestionSetId = async (learnerId: string, questionSetId: string): Promise<LearnerProficiencyQuestionLevelData[]> => {
   return LearnerProficiencyQuestionLevelData.findAll({
-    where: { learner_id: learnerId, question_set_id: questionSetId, attempt_number },
+    where: { learner_id: learnerId, question_set_id: questionSetId },
     raw: true,
   });
 };
