@@ -18,6 +18,10 @@ export const createAggregateData = async (transaction: any, req: any): Promise<a
   return LearnerProficiencyAggregateData.create(req, { transaction });
 };
 
+export const bulkCreateAggregateData = async (transaction: any, req: any): Promise<any> => {
+  return LearnerProficiencyAggregateData.bulkCreate(req, { transaction });
+};
+
 export const updateAggregateData = async (transaction: any, identifier: string, req: any): Promise<any> => {
   return LearnerProficiencyAggregateData.update(req, {
     where: { identifier },

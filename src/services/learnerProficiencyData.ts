@@ -28,6 +28,10 @@ export const createLearnerProficiencyQuestionLevelData = async (transaction: any
   return LearnerProficiencyQuestionLevelData.create(req, { transaction });
 };
 
+export const bulkCreateLearnerProficiencyQuestionLevelData = async (transaction: any, req: Optional<any, string>[]): Promise<LearnerProficiencyQuestionLevelData[]> => {
+  return LearnerProficiencyQuestionLevelData.bulkCreate(req, { transaction });
+};
+
 export const updateLearnerProficiencyQuestionLevelData = async (transaction: any, identifier: string, req: any): Promise<any> => {
   const whereClause: Record<string, any> = { identifier };
   const updatedLearnerData = await LearnerProficiencyQuestionLevelData.update(req, {

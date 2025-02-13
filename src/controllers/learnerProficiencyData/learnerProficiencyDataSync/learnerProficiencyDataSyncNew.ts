@@ -7,7 +7,7 @@ import logger from '../../../utils/logger';
 import { ResponseHandler } from '../../../utils/responseHandler';
 import { amlError } from '../../../types/amlError';
 import {
-  createLearnerProficiencyQuestionLevelData,
+  bulkCreateLearnerProficiencyQuestionLevelData,
   createLearnerProficiencyQuestionSetLevelData,
   getQuestionLevelDataByLearnerIdQuestionIdQuestionSetIdAndAttemptNumber,
   getRecordsForLearnerByQuestionSetId,
@@ -110,6 +110,8 @@ const learnerProficiencyDataSyncNew = async (req: Request, res: Response) => {
     attemptNumber = learnerJourney.attempt_number + 1;
   }
 
+  const questionLevelBulkCreateData = [];
+
   try {
     /**
      * Updating question level data in the following block
@@ -158,7 +160,7 @@ const learnerProficiencyDataSyncNew = async (req: Request, res: Response) => {
         continue;
       }
 
-      const newData = await createLearnerProficiencyQuestionLevelData(transaction, {
+      questionLevelBulkCreateData.push({
         identifier: uuid.v4(),
         learner_id,
         question_id,
@@ -170,8 +172,14 @@ const learnerProficiencyDataSyncNew = async (req: Request, res: Response) => {
         attempt_number: attemptNumber,
         created_by: learner_id,
       });
-      _.set(newLearnerAttempts, newData.dataValues.id, newData.dataValues);
     }
+
+    const newData = await bulkCreateLearnerProficiencyQuestionLevelData(transaction, questionLevelBulkCreateData);
+
+    for (const datum of newData) {
+      _.set(newLearnerAttempts, datum.dataValues.id, datum.dataValues);
+    }
+
     logger.info(`[learnerProficiencyDataSync] msgid: ${msgid} timestamp: ${moment().format('DD-MM-YYYY hh:mm:ss')} action: question level data updated`);
 
     /**

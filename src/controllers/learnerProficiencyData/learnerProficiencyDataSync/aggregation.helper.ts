@@ -1,4 +1,4 @@
-import { createAggregateData, findAggregateData, updateAggregateData } from '../../../services/learnerAggregateData';
+import { bulkCreateAggregateData, findAggregateData, updateAggregateData } from '../../../services/learnerAggregateData';
 import * as _ from 'lodash';
 import * as uuid from 'uuid';
 import { Question } from '../../../models/question';
@@ -203,6 +203,7 @@ export const aggregateLearnerData = async (
   learner: Learner,
   reqData: { class_id: string; l1_skill_id: string; total: number; questionsCount: number; sub_skills: { [skillType: string]: number } }[],
 ) => {
+  const bulkCreateData = [];
   for (const datum of reqData) {
     const existingEntry = await findAggregateData({ learner_id: learner.identifier, class_id: datum.class_id, l1_skill_id: datum.l1_skill_id });
     if (existingEntry) {
@@ -214,7 +215,7 @@ export const aggregateLearnerData = async (
       });
       continue;
     }
-    await createAggregateData(transaction, {
+    bulkCreateData.push({
       identifier: uuid.v4(),
       learner_id: learner.identifier,
       taxonomy: learner.taxonomy,
@@ -226,4 +227,5 @@ export const aggregateLearnerData = async (
       created_by: learner.identifier,
     });
   }
+  await bulkCreateAggregateData(transaction, bulkCreateData);
 };
