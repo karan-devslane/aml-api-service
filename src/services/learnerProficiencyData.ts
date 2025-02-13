@@ -11,6 +11,19 @@ export const getQuestionLevelDataByLearnerIdQuestionIdAndQuestionSetId = async (
   });
 };
 
+export const getQuestionLevelDataByLearnerIdQuestionIdQuestionSetIdAndAttemptNumber = async (
+  learnerId: string,
+  questionId: string,
+  questionSetId: string,
+  attempt_number: number,
+): Promise<LearnerProficiencyQuestionLevelData | null> => {
+  return LearnerProficiencyQuestionLevelData.findOne({
+    where: { learner_id: learnerId, question_id: questionId, question_set_id: questionSetId, attempt_number },
+    order: [['attempt_number', 'desc']],
+    raw: true,
+  });
+};
+
 export const createLearnerProficiencyQuestionLevelData = async (transaction: any, req: Optional<any, string> | undefined): Promise<LearnerProficiencyQuestionLevelData> => {
   return LearnerProficiencyQuestionLevelData.create(req, { transaction });
 };
