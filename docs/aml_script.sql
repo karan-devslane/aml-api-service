@@ -2431,3 +2431,118 @@ ADD COLUMN identifier VARCHAR(255);
 
 ALTER TABLE repository_associations
 ADD CONSTRAINT repository_associations_identifier_unique UNIQUE (identifier);
+
+
+------------------------------------------------------------------
+-- NQL related tables --
+------------------------------------------------------------------
+
+create table if not exists question_meta
+(
+    id            serial
+        primary key,
+    question_x_id varchar(255)             not null
+        unique,
+    meta          jsonb                    not null,
+    created_by    varchar(255)             not null,
+    updated_by    varchar(255),
+    created_at    timestamp with time zone not null,
+    updated_at    timestamp with time zone not null
+);
+
+create table if not exists sub_topic_master
+(
+    id         serial
+        primary key,
+    identifier varchar(255)             not null
+        unique,
+    name       varchar(255)             not null
+        unique,
+    created_by varchar(255)             not null,
+    updated_by varchar(255),
+    created_at timestamp with time zone not null,
+    updated_at timestamp with time zone not null
+);
+
+create table if not exists sub_topic_hierarchy
+(
+    id                    serial
+    primary key,
+    topic                 varchar(255)             not null,
+    sub_topic_id          varchar(255)             not null,
+    class_id              varchar(255)             not null,
+    sequence              integer                  not null,
+    question_types        jsonb                    not null,
+    include_in_diagnostic boolean                  not null,
+    created_by            varchar(255)             not null,
+    updated_by            varchar(255),
+    created_at            timestamp with time zone not null,
+    updated_at            timestamp with time zone not null
+);
+
+create table if not exists primary_skill_combinations
+(
+    id             serial
+        primary key,
+    identifier     varchar(255)             not null,
+    topic          varchar(255)             not null,
+    sub_topic_id   varchar(255)             not null,
+    class_id       varchar(255)             not null,
+    priority_level integer                  not null,
+    level          integer[]                not null,
+    sub_skill_ids  varchar(255)[]           not null,
+    created_by     varchar(255)             not null,
+    updated_by     varchar(255),
+    created_at     timestamp with time zone not null,
+    updated_at     timestamp with time zone not null
+);
+
+create table if not exists sub_topic_nql_type_mapping
+(
+    id            serial
+    primary key,
+    topic         varchar(255)             not null,
+    sub_topic_id  varchar(255)             not null,
+    nql_type      varchar(255)             not null,
+    question_type varchar(255)             not null,
+    created_by    varchar(255)             not null,
+    updated_by    varchar(255),
+    created_at    timestamp with time zone not null,
+    updated_at    timestamp with time zone not null
+);
+
+create table if not exists accuracy_thresholds
+(
+    id                   serial
+        primary key,
+    topic                varchar(255)             not null,
+    sub_topic_id         varchar(255)             not null,
+    question_type        varchar(255)             not null,
+    threshold            double precision         not null,
+    retry_question_count integer,
+    created_by           varchar(255)             not null,
+    updated_by           varchar(255),
+    created_at           timestamp with time zone not null,
+    updated_at           timestamp with time zone not null
+);
+
+create table if not exists learner_mastery_data
+(
+    id                            serial
+        primary key,
+    learner_id                    varchar(255)             not null,
+    topic                         varchar(255)             not null,
+    sub_topic_id                  varchar(255)             not null,
+    skill_combination_id          varchar(255)             not null,
+    mastery_score                 double precision         not null,
+    accuracy                      double precision         not null,
+    total_recent_attempts         integer                  not null,
+    complexity_score_percentile   double precision         not null,
+    max_complexity_score          double precision         not null,
+    updated_for_question_set_type varchar(255)             not null,
+    updated_for_question_set_id   varchar(255)             not null,
+    created_by                    varchar(255)             not null,
+    updated_by                    varchar(255),
+    created_at                    timestamp with time zone not null,
+    updated_at                    timestamp with time zone not null
+);
