@@ -6,7 +6,7 @@ export class QuestionMeta extends Model {
   declare question_x_id: string;
   declare meta: {
     complexity_score: number;
-    sub_topics: string[];
+    sub_topic_ids: string[];
   };
   declare created_by: string;
   declare updated_by: string;
