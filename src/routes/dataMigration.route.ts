@@ -10,6 +10,9 @@ import updateQuestionAudioDescription from '../controllers/dataMigrations/update
 import generateAudioForDescriptions from '../controllers/dataMigrations/generateAudioForDescriptions';
 import createAudioQuestionMapping from '../controllers/dataMigrations/createAudioQuestionMapping';
 import initializeQuestionMetaTable from '../controllers/dataMigrations/initializeQuestionMetaTable';
+import initializeSubTopicHierarchyTable from '../controllers/dataMigrations/initializeSubTopicHierarchyTable';
+import initializeSubTopicNQLTypeTable from '../controllers/dataMigrations/initializeSubTopicNQLTypeTable';
+import initializeAccuracyThresholdsTable from '../controllers/dataMigrations/initializeAccuracyThresholdsTable';
 
 export const dataMigrations = express.Router();
 
@@ -35,4 +38,8 @@ dataMigrations.post('/create-audio-question-mapping', createAudioQuestionMapping
 
 dataMigrations.post('/initialize-question-meta-table', initializeQuestionMetaTable);
 
-dataMigrations.post('/initialize-sub-topic-hierarchy-table', initializeQuestionMetaTable);
+dataMigrations.post('/initialize-sub-topic-hierarchy-table', initializeSubTopicHierarchyTable);
+
+dataMigrations.post('/initialize-sub-topic-nql-type-table', initializeSubTopicNQLTypeTable);
+
+dataMigrations.post('/initialize-accuracy-thresholds-table', initializeAccuracyThresholdsTable);
