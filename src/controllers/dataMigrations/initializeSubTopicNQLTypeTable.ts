@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { amlError } from '../../types/amlError';
 import { getCSVEntries } from './helper';
 import { AppDataSource } from '../../config';

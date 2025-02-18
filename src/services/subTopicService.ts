@@ -1,4 +1,5 @@
 import { SubTopicMaster } from '../models/subTopicMaster';
+import { Transaction } from 'sequelize';
 
 class SubTopicService {
   static getInstance() {
@@ -10,6 +11,10 @@ class SubTopicService {
       where: { name },
       attributes: ['identifier'],
     });
+  }
+
+  async create(data: { identifier: string; name: string; created_by: string }, transaction?: Transaction) {
+    return SubTopicMaster.create(data, { transaction });
   }
 }
 
