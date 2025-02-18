@@ -15,11 +15,11 @@ import { getSubSkill } from '../../services/subSkill';
 import { getQuestionBody } from '../questionCreate/questionCreate.helper';
 import { User } from '../../models/users';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
-import { getUserByIdentifier } from '../../services/user';
 import { classService } from '../../services/classService';
 import { questionSetService } from '../../services/questionSetService';
 import { questionSetQuestionMappingService } from '../../services/questionSetQuestionMappingService';
 import { AudioManager } from '../../services/AudioManager';
+import { userService } from '../../services/userService';
 
 const updateQuestionById = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -217,7 +217,7 @@ const updateQuestionById = async (req: Request, res: Response) => {
   await Promise.all(mappingPromises1);
   await Promise.all(mappingPromises2);
 
-  const createdByUser = await getUserByIdentifier(affectedRows?.[0]?.created_by);
+  const createdByUser = await userService.getUserByIdentifier(affectedRows?.[0]?.created_by);
 
   const users = new UserTransformer().transformList(_.uniqBy([createdByUser, loggedInUser], 'identifier').filter((v) => !!v));
 

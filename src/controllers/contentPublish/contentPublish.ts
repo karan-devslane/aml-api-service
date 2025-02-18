@@ -7,8 +7,8 @@ import { amlError } from '../../types/amlError';
 import { Status } from '../../enums/status';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { User } from '../../models/users';
-import { getUserByIdentifier } from '../../services/user';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
+import { userService } from '../../services/userService';
 
 export const apiId = 'api.content.publish';
 
@@ -31,7 +31,7 @@ const publishContent = async (req: Request, res: Response) => {
   // Publish the content
   const [, affectedRows] = await publishContentById(contentId, loggedInUser!.identifier);
 
-  const createdByUser = await getUserByIdentifier(affectedRows?.[0]?.created_by);
+  const createdByUser = await userService.getUserByIdentifier(affectedRows?.[0]?.created_by);
 
   const users = new UserTransformer().transformList(_.uniqBy([createdByUser, loggedInUser], 'identifier').filter((v) => !!v));
 

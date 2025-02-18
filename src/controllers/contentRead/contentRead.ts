@@ -7,7 +7,7 @@ import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { getFileUrlByFolderAndFileName } from '../../services/awsService';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
-import { getUsersByIdentifiers } from '../../services/user';
+import { userService } from '../../services/userService';
 
 const contentReadById = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -29,7 +29,7 @@ const contentReadById = async (req: Request, res: Response) => {
 
   _.set(content, 'media', mediaWithUrls);
 
-  const users = await getUsersByIdentifiers(([content?.created_by, content?.updated_by] as any[]).filter((v) => !!v));
+  const users = await userService.getUsersByIdentifiers(([content?.created_by, content?.updated_by] as any[]).filter((v) => !!v));
 
   const transformedUsers = new UserTransformer().transformList(users);
 

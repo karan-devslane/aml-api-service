@@ -12,9 +12,9 @@ import { getFileUrlByFolderAndFileName } from '../../services/awsService';
 import { getContentByIds } from '../../services/content';
 import { Content } from '../../models/content';
 import { FIBType } from '../../enums/fibType';
-import { getUsersByIdentifiers } from '../../services/user';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
 import { questionSetQuestionMappingService } from '../../services/questionSetQuestionMappingService';
+import { userService } from '../../services/userService';
 
 const readQuestionSetById = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -71,7 +71,7 @@ const readQuestionSetById = async (req: Request, res: Response) => {
       }),
   };
 
-  const users = await getUsersByIdentifiers(([questionSet?.created_by, questionSet?.updated_by] as any[]).filter((v) => !!v));
+  const users = await userService.getUsersByIdentifiers(([questionSet?.created_by, questionSet?.updated_by] as any[]).filter((v) => !!v));
 
   const transformedUsers = new UserTransformer().transformList(users);
 

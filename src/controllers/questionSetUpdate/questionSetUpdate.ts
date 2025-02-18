@@ -16,12 +16,12 @@ import { questionService } from '../../services/questionService';
 import { QuestionSetPurposeType } from '../../enums/questionSetPurposeType';
 import { User } from '../../models/users';
 import { getContentById } from '../../services/content';
-import { getUserByIdentifier } from '../../services/user';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
 import { classService } from '../../services/classService';
 import { questionSetQuestionMappingService } from '../../services/questionSetQuestionMappingService';
 import { QuestionSet } from '../../models/questionSet';
 import { Op } from 'sequelize';
+import { userService } from '../../services/userService';
 
 const updateQuestionSetById = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -304,7 +304,7 @@ const updateQuestionSetById = async (req: Request, res: Response) => {
   await Promise.all(mappingPromises2);
   await Promise.all(questionSetUpdatePromises);
 
-  const createdByUser = await getUserByIdentifier(affectedRows?.[0]?.created_by);
+  const createdByUser = await userService.getUserByIdentifier(affectedRows?.[0]?.created_by);
 
   const users = new UserTransformer().transformList(_.uniqBy([createdByUser, loggedInUser], 'identifier').filter((v) => !!v));
 

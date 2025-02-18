@@ -8,13 +8,13 @@ import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { getContentList } from '../../services/content';
 import { getFileUrlByFolderAndFileName } from '../../services/awsService';
-import { getUsersByIdentifiers } from '../../services/user';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
 import { getRepositoryById } from '../../services/repository';
 import { boardService } from '../../services/boardService';
 import { classService } from '../../services/classService';
 import { getSkillByIdAndType } from '../../services/skill';
 import { SkillType } from '../../enums/skillType';
+import { userService } from '../../services/userService';
 
 export const searchContents = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -50,7 +50,7 @@ export const searchContents = async (req: Request, res: Response) => {
     }, [])
     .filter((v) => !!v);
 
-  const users = await getUsersByIdentifiers(userIds);
+  const users = await userService.getUsersByIdentifiers(userIds);
 
   const transformedUsers = new UserTransformer().transformList(users);
 

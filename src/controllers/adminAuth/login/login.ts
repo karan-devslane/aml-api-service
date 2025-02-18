@@ -8,10 +8,10 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { ResponseHandler } from '../../../utils/responseHandler';
 import httpStatus from 'http-status';
-import { getUserByEmail } from '../../../services/user';
 import { appConfiguration } from '../../../config';
 import { UserTransformer } from '../../../transformers/entity/user.transformer';
 import { tenantService } from '../../../services/tenantService';
+import { userService } from '../../../services/userService';
 
 const { aml_jwt_secret_key } = appConfiguration;
 
@@ -32,7 +32,7 @@ const login = async (req: Request, res: Response) => {
 
   const { email, password } = dataBody;
 
-  const user = await getUserByEmail(email);
+  const user = await userService.getUserByEmail(email);
 
   if (!user || _.isEmpty(user)) {
     const code = 'USER_NOT_FOUND';

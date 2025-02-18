@@ -6,10 +6,10 @@ import { questionService } from '../../services/questionService';
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { getFileUrlByFolderAndFileName } from '../../services/awsService';
-import { getUsersByIdentifiers } from '../../services/user';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
 import { questionSetQuestionMappingService } from '../../services/questionSetQuestionMappingService';
 import { questionSetService } from '../../services/questionSetService';
+import { userService } from '../../services/userService';
 
 const readQuestionById = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -31,7 +31,7 @@ const readQuestionById = async (req: Request, res: Response) => {
     _.set(question.question_body, 'question_image_url', getFileUrlByFolderAndFileName(question.question_body.question_image.src, question.question_body.question_image.fileName));
   }
 
-  const users = await getUsersByIdentifiers(([question?.created_by, question?.updated_by] as any[]).filter((v) => !!v));
+  const users = await userService.getUsersByIdentifiers(([question?.created_by, question?.updated_by] as any[]).filter((v) => !!v));
 
   const transformedUsers = new UserTransformer().transformList(users);
 
