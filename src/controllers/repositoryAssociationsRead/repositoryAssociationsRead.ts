@@ -7,7 +7,7 @@ import { findRepositoryAssociationsByRepositoryId } from '../../services/reposit
 import { getRepositoryById } from '../../services/repository';
 import { boardService } from '../../services/boardService';
 import { tenantService } from '../../services/tenantService';
-import { getLearnerByIdentifier } from '../../services/learner';
+import { learnerService } from '../../services/learnerService';
 
 export const apiId = 'api.repository.read';
 
@@ -27,7 +27,7 @@ const repositoryAssociationsReadByRepositoryId = async (req: Request, res: Respo
   const repositories = repositoryIds?.length ? await Promise.all(repositoryIds.map((id) => getRepositoryById(id))) : [];
   const boards = boardIds?.length ? await Promise.all(boardIds.map((id: any) => boardService.getBoardByIdentifier(id))) : [];
   const tenants = tenantIds?.length ? await Promise.all(tenantIds.map((id: any) => tenantService.getTenant(id))) : [];
-  const learners = learnerIds?.length ? await Promise.all(learnerIds.map((id: any) => getLearnerByIdentifier(id))) : [];
+  const learners = learnerIds?.length ? await Promise.all(learnerIds.map((id: any) => learnerService.getLearnerByIdentifier(id))) : [];
 
   const responseData = {
     repository_associations: repositoryAssociations,

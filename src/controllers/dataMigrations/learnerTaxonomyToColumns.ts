@@ -3,7 +3,7 @@ import logger from '../../utils/logger';
 import * as _ from 'lodash';
 import httpStatus from 'http-status';
 import { ResponseHandler } from '../../utils/responseHandler';
-import { listLearners, updateLearner } from '../../services/learner';
+import { learnerService } from '../../services/learnerService';
 import { amlError } from '../../types/amlError';
 
 export const learnerTaxonomyToColumns = async (req: Request, res: Response) => {
@@ -12,7 +12,7 @@ export const learnerTaxonomyToColumns = async (req: Request, res: Response) => {
   const msgid = _.get(req, ['body', 'params', 'msgid']);
   const resmsgid = _.get(res, 'resmsgid');
 
-  const allLearners = await listLearners();
+  const allLearners = await learnerService.listLearners();
 
   if (allLearners.length === 0) {
     logger.info({ apiId, requestBody, message: `No Learners found` });
@@ -27,7 +27,7 @@ export const learnerTaxonomyToColumns = async (req: Request, res: Response) => {
       class_id: taxonomyData?.class?.identifier ?? null,
       name: learner.username,
     };
-    return updateLearner(learner.id, updateData);
+    return learnerService.updateLearner(learner.id, updateData);
   });
 
   const results = await Promise.allSettled(updatePromises);

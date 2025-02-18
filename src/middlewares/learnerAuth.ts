@@ -1,10 +1,10 @@
 import { NextFunction, Request } from 'express';
-import { getLearnerByIdentifier } from '../services/learner';
 import moment from 'moment';
 import logger from '../utils/logger';
 import { amlError } from '../types/amlError';
 import httpStatus from 'http-status';
 import lodash from 'lodash';
+import { learnerService } from '../services/learnerService';
 
 export const learnerAuth = async (req: Request, res: any, next: NextFunction) => {
   const apiId = lodash.get(req, 'id');
@@ -16,7 +16,7 @@ export const learnerAuth = async (req: Request, res: any, next: NextFunction) =>
     throw amlError(code, 'Unauthenticated', 'UNAUTHENTICATED', httpStatus.UNAUTHORIZED);
   }
 
-  const learner = await getLearnerByIdentifier(learnerId);
+  const learner = await learnerService.getLearnerByIdentifier(learnerId);
 
   if (!learner) {
     const code = 'UNAUTHORIZED_ACCESS';

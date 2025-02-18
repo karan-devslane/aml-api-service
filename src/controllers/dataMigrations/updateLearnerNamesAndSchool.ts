@@ -7,10 +7,10 @@ import { AppDataSource } from '../../config';
 import { getCSVEntries } from './helper';
 import { SectionMaster } from '../../models/sectionMaster';
 import * as uuid from 'uuid';
-import { getLearnerByUserName } from '../../services/learner';
 import { schoolService } from '../../services/schoolService';
 import { Learner } from '../../models/learner';
 import bcrypt from 'bcrypt';
+import { learnerService } from '../../services/learnerService';
 
 const updateLearnerNamesAndSchool = async (req: Request, res: Response) => {
   const csvFile = _.get(req, ['files', 'document'], {});
@@ -58,7 +58,7 @@ const updateLearnerNamesAndSchool = async (req: Request, res: Response) => {
         .split(' ')
         .map((token) => _.capitalize(token))
         .join(' ');
-      const learnerExists = await getLearnerByUserName(username);
+      const learnerExists = await learnerService.getLearnerByUserName(username);
       if (learnerExists) {
         await learnerExists.update(
           {
