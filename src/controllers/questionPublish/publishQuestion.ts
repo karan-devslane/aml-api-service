@@ -7,8 +7,8 @@ import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { Status } from '../../enums/status';
 import { User } from '../../models/users';
-import { getUserByIdentifier } from '../../services/user';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
+import { userService } from '../../services/userService';
 
 const publishQuestion = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -28,7 +28,7 @@ const publishQuestion = async (req: Request, res: Response) => {
 
   const [, affectedRows] = await questionService.publishQuestionById(question_id, loggedInUser!.identifier);
 
-  const createdByUser = await getUserByIdentifier(affectedRows?.[0]?.created_by);
+  const createdByUser = await userService.getUserByIdentifier(affectedRows?.[0]?.created_by);
 
   const users = new UserTransformer().transformList(_.uniqBy([createdByUser, loggedInUser], 'identifier').filter((v) => !!v));
 

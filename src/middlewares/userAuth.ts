@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { getUserByEmail } from '../services/user';
 import { appConfiguration } from '../config';
 import lodash from 'lodash';
 import { amlError } from '../types/amlError';
 import { UserTransformer } from '../transformers/entity/user.transformer';
+import { userService } from '../services/userService';
 
 const { aml_jwt_secret_key } = appConfiguration;
 
@@ -24,7 +24,7 @@ export const userAuth = async (req: Request, res: Response, next: NextFunction) 
     const decoded = jwt.verify(token, aml_jwt_secret_key) as jwt.JwtPayload;
     const { email } = decoded;
     // Fetch the user by email
-    user = await getUserByEmail(email);
+    user = await userService.getUserByEmail(email);
   } catch (error) {
     const code = 'INVALID_TOKEN';
     throw amlError(code, 'Invalid Token', 'INVALID_TOKEN', 498);

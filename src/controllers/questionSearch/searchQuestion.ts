@@ -8,7 +8,6 @@ import { schemaValidation } from '../../services/validationService';
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { getFileUrlByFolderAndFileName } from '../../services/awsService';
-import { getUsersByIdentifiers } from '../../services/user';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
 import { getRepositoryById } from '../../services/repository';
 import { boardService } from '../../services/boardService';
@@ -18,6 +17,7 @@ import { getSubSkill } from '../../services/subSkill';
 import { classService } from '../../services/classService';
 import { questionSetQuestionMappingService } from '../../services/questionSetQuestionMappingService';
 import { questionSetService } from '../../services/questionSetService';
+import { userService } from '../../services/userService';
 
 export const searchQuestions = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -48,7 +48,7 @@ export const searchQuestions = async (req: Request, res: Response) => {
     }, [])
     .filter((v) => !!v);
 
-  const users = await getUsersByIdentifiers(userIds);
+  const users = await userService.getUsersByIdentifiers(userIds);
 
   const transformedUsers = new UserTransformer().transformList(users);
 
