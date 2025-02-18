@@ -40,6 +40,10 @@ export = {
         type: DataTypes.BOOLEAN,
         allowNull: false,
       },
+      board_id: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       created_by: {
         type: DataTypes.STRING,
         allowNull: false,

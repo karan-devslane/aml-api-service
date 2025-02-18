@@ -28,10 +28,6 @@ export = {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      class_id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       priority_level: {
         type: DataTypes.INTEGER,
         allowNull: false,

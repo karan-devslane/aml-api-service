@@ -8,7 +8,7 @@ export class AccuracyThresholds extends Model {
   declare topic: QuestionOperation;
   declare sub_topic_id: string;
   declare question_type: QuestionType;
-  declare threshold: number;
+  declare threshold: any;
   declare retry_question_count?: number;
   declare created_by: string;
   declare updated_by: string;
@@ -35,12 +35,8 @@ AccuracyThresholds.init(
       allowNull: false,
     },
     threshold: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.JSONB,
       allowNull: false,
-    },
-    retry_question_count: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
     },
     created_by: {
       type: DataTypes.STRING,

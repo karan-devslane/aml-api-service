@@ -11,6 +11,7 @@ export class SubTopicHierarchy extends Model {
   declare sequence: number;
   declare question_types: { name: QuestionType; sequence: number }[];
   declare include_in_diagnostic: boolean;
+  declare board_id?: boolean;
   declare created_by: string;
   declare updated_by: string;
 }
@@ -46,6 +47,10 @@ SubTopicHierarchy.init(
     include_in_diagnostic: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+    },
+    board_id: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     created_by: {
       type: DataTypes.STRING,

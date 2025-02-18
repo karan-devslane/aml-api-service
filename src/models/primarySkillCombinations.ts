@@ -7,7 +7,6 @@ export class PrimarySkillCombinations extends Model {
   declare identifier: string;
   declare topic: QuestionOperation;
   declare sub_topic_id: string;
-  declare class_id: string;
   declare priority_level: number;
   declare level: number[];
   declare sub_skill_ids: string[];
@@ -32,10 +31,6 @@ PrimarySkillCombinations.init(
       allowNull: false,
     },
     sub_topic_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    class_id: {
       type: DataTypes.STRING,
       allowNull: false,
     },

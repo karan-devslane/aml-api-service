@@ -29,12 +29,8 @@ export = {
         allowNull: false,
       },
       threshold: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.JSONB,
         allowNull: false,
-      },
-      retry_question_count: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
       },
       created_by: {
         type: DataTypes.STRING,
