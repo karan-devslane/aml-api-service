@@ -1682,16 +1682,16 @@ INSERT INTO skill_master (
 
  -- Table for managing sub-skills
 CREATE TABLE IF NOT EXISTS sub_skill_master (
-    id SERIAL PRIMARY KEY,
-    identifier VARCHAR(255) NOT NULL,
-    name JSONB NOT NULL UNIQUE,  -- Multilingual field for sub-skill name, must be unique
-    description JSONB,  -- Optional: multilingual description
-    status VARCHAR(10) NOT NULL CHECK (status IN ('draft', 'live')),  -- Enum for status
-    is_active BOOLEAN NOT NULL,
-    created_by VARCHAR(255) NOT NULL,
-    updated_by VARCHAR(255),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    id         serial                   primary key,
+    identifier varchar(255)             not null unique,
+    topic      varchar(255)             not null,
+    skill_name varchar(255)             not null,
+    skill_type varchar(255)             not null,
+    sequence   integer                  not null,
+    created_by varchar(255)             not null,
+    updated_by varchar(255),
+    created_at timestamp with time zone not null,
+    updated_at timestamp with time zone not null
 );
 
 INSERT INTO sub_skill_master (
@@ -2544,4 +2544,17 @@ create table if not exists learner_mastery_data
     updated_by                    varchar(255),
     created_at                    timestamp with time zone not null,
     updated_at                    timestamp with time zone not null
+);
+
+create table if not exists sub_skill_values
+(
+    id               serial                   primary key,
+    identifier       varchar(255)             not null unique,
+    sub_skill_id     varchar(255)             not null,
+    skill_value_name varchar(255)             not null,
+    sequence         integer                  not null,
+    created_by       varchar(255)             not null,
+    updated_by       varchar(255),
+    created_at       timestamp with time zone not null,
+    updated_at       timestamp with time zone not null
 );
