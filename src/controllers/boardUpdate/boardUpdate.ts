@@ -7,8 +7,8 @@ import logger from '../../utils/logger';
 import boardUpdateJson from './updateBoardValidationSchema.json';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { amlError } from '../../types/amlError';
-import { checkSkillsExistByIds } from '../../services/skill';
 import { classService } from '../../services/classService';
+import { skillService } from '../../services/skillService';
 
 export const apiId = 'api.board.update';
 
@@ -62,7 +62,7 @@ const updateBoard = async (req: Request, res: Response) => {
       }
 
       if (l1_skill_ids) {
-        const isL1Exists = await checkSkillsExistByIds(l1_skill_ids);
+        const isL1Exists = await skillService.checkSkillsExistByIds(l1_skill_ids);
         if (!isL1Exists) {
           const code = 'L1_SKILL_NOT_EXISTS';
           logger.error({ code, apiId, msgid, resmsgid, message: `One or more L1 skills for class ID ${id} do not exist or are not of type l1_skill` });

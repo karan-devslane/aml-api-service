@@ -8,8 +8,8 @@ import _ from 'lodash';
 import { SkillMaster } from '../models/skill';
 import { checkSkillTaxonomyIdExists } from './skillTaxonomy';
 import { amlError } from '../types/amlError';
-import { checkSkillsExistByIds } from './skill';
 import { classService } from './classService';
+import { skillService } from './skillService';
 
 // Helper to process insertions
 const processInsertionResults = (results: any[]) => {
@@ -124,7 +124,7 @@ const handleBoardInsertion = async (boardData: any[]) => {
 
           // Validate l1_skill_ids array
           if (l1_skill_ids) {
-            const isL1Exists = await checkSkillsExistByIds(l1_skill_ids); // Check for 'l1_skill' type
+            const isL1Exists = await skillService.checkSkillsExistByIds(l1_skill_ids); // Check for 'l1_skill' type
             if (!isL1Exists) {
               const code = 'L1_SKILL_NOT_EXISTS';
               throw amlError(code, 'One or more L1 skills do not exist or are not of type l1_skill', 'NOT_FOUND', 404);

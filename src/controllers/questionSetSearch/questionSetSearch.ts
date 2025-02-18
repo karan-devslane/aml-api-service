@@ -10,11 +10,11 @@ import { questionSetService } from '../../services/questionSetService';
 import { boardService } from '../../services/boardService';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
 import { getRepositoryById } from '../../services/repository';
-import { getSkillByIdAndType } from '../../services/skill';
 import { SkillType } from '../../enums/skillType';
 import { getSubSkill } from '../../services/subSkill';
 import { classService } from '../../services/classService';
 import { userService } from '../../services/userService';
+import { skillService } from '../../services/skillService';
 
 export const searchQuestionSets = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -93,19 +93,19 @@ export const searchQuestionSets = async (req: Request, res: Response) => {
         }
       }
       if (filters.l1_skill_id) {
-        const skill = await getSkillByIdAndType(filters.l1_skill_id, SkillType.L1_SKILL);
+        const skill = await skillService.getSkillByIdAndType(filters.l1_skill_id, SkillType.L1_SKILL);
         if (skill) {
           _.set(l1_skills, skill.identifier, skill);
         }
       }
       if (filters.l2_skill_id) {
-        const skill = await getSkillByIdAndType(filters.l2_skill_id, SkillType.L2_SKILL);
+        const skill = await skillService.getSkillByIdAndType(filters.l2_skill_id, SkillType.L2_SKILL);
         if (skill) {
           _.set(l2_skills, skill.identifier, skill);
         }
       }
       if (filters.l3_skill_id) {
-        const skill = await getSkillByIdAndType(filters.l3_skill_id, SkillType.L3_SKILL);
+        const skill = await skillService.getSkillByIdAndType(filters.l3_skill_id, SkillType.L3_SKILL);
         if (skill) {
           _.set(l3_skills, skill.identifier, skill);
         }
