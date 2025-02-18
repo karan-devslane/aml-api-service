@@ -10,9 +10,9 @@ import repositoryAssociationsCreateValidationSchema from './repositoryAssociatio
 import { User } from '../../models/users';
 import { checkIfAssociationExists, createRepositoryAssociations, getMaxSequenceForEntity } from '../../services/repositoryAssociation';
 import { getRepositoryById } from '../../services/repository';
-import { getLearnerByIdentifier } from '../../services/learner';
 import { boardService } from '../../services/boardService';
 import { tenantService } from '../../services/tenantService';
+import { learnerService } from '../../services/learnerService';
 
 export const apiId = 'api.repository.associations.create';
 
@@ -92,7 +92,7 @@ const createRepositoryAssociation = async (req: Request, res: Response) => {
   const repositories = repositoryIds?.length ? await Promise.all(repositoryIds.map((id) => getRepositoryById(id))) : [];
   const boards = boardIds?.length ? await Promise.all(boardIds.map((id: any) => boardService.getBoardByIdentifier(id))) : [];
   const tenants = tenantIds?.length ? await Promise.all(tenantIds.map((id: any) => tenantService.getTenant(id))) : [];
-  const learners = learnerIds?.length ? await Promise.all(learnerIds.map((id: any) => getLearnerByIdentifier(id))) : [];
+  const learners = learnerIds?.length ? await Promise.all(learnerIds.map((id: any) => learnerService.getLearnerByIdentifier(id))) : [];
 
   const responseData = {
     repository_associations: associations,

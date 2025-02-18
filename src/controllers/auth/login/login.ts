@@ -4,11 +4,11 @@ import { schemaValidation } from '../../../services/validationService';
 import loginJson from './loginValidationSchema.json';
 import logger from '../../../utils/logger';
 import { amlError } from '../../../types/amlError';
-import { getLearnerByUserName } from '../../../services/learner';
 import bcrypt from 'bcrypt';
 import { ResponseHandler } from '../../../utils/responseHandler';
 import httpStatus from 'http-status';
 import { tenantService } from '../../../services/tenantService';
+import { learnerService } from '../../../services/learnerService';
 
 const login = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -27,7 +27,7 @@ const login = async (req: Request, res: Response) => {
 
   const { username, password } = dataBody;
 
-  const learner = await getLearnerByUserName(username);
+  const learner = await learnerService.getLearnerByUserName(username);
 
   if (!learner || _.isEmpty(learner)) {
     const code = 'LEARNER_NOT_FOUND';

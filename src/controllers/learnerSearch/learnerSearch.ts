@@ -6,7 +6,7 @@ import { schemaValidation } from '../../services/validationService';
 import listLearnersJson from './listLearnersValidationSchema.json';
 import { amlError } from '../../types/amlError';
 import logger from '../../utils/logger';
-import { getLearnerList } from '../../services/learner';
+import { learnerService } from '../../services/learnerService';
 
 const listLearners = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -21,7 +21,7 @@ const listLearners = async (req: Request, res: Response) => {
     logger.error({ code, apiId, msgid, resmsgid, requestBody, message: isRequestValid.message });
     throw amlError(code, isRequestValid.message, 'BAD_REQUEST', 400);
   }
-  const learnersData = await getLearnerList(requestBody.request);
+  const learnersData = await learnerService.getLearnerList(requestBody.request);
 
   logger.info({ apiId, requestBody, message: `Learners are listed successfully` });
   ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: learnersData });
