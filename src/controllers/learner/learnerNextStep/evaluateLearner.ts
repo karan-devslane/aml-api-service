@@ -13,8 +13,8 @@ import { PASSING_MARKS } from '../../../constants/constants';
 import { QuestionSetPurposeType } from '../../../enums/questionSetPurposeType';
 import { BoardMaster } from '../../../models/boardMaster';
 import { classMaster } from '../../../models/classMaster';
-import { fetchSkillsByIds } from '../../../services/skill';
 import { findRepositoryAssociations } from '../../../services/repositoryAssociation';
+import { skillService } from '../../../services/skillService';
 
 const evaluateLearner = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -89,7 +89,7 @@ const evaluateLearner = async (req: Request, res: Response) => {
   const currentGradeIndex = class_ids.findIndex((datum: { identifier: string }) => datum.identifier === classEntity?.[0]?.identifier);
   const highestApplicableGradeMapping = class_ids[currentGradeIndex - 1] as { identifier: string; l1_skill_ids: string[] };
   const requiredL1SkillsIds = highestApplicableGradeMapping.l1_skill_ids;
-  const requiredL1Skills = await fetchSkillsByIds(requiredL1SkillsIds);
+  const requiredL1Skills = await skillService.fetchSkillsByIds(requiredL1SkillsIds);
 
   let questionSetId: string = '';
   let allQuestionsAttempted = false;

@@ -9,12 +9,12 @@ import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { getRepositoryById } from '../../services/repository';
 import { boardService } from '../../services/boardService';
-import { getSkillById } from '../../services/skill';
 import { SkillType } from '../../enums/skillType';
 import { getSubSkill } from '../../services/subSkill';
 import { classService } from '../../services/classService';
 import { tenantService } from '../../services/tenantService';
 import { User } from '../../models/users';
+import { skillService } from '../../services/skillService';
 
 export const apiId = 'api.content.update';
 
@@ -109,7 +109,7 @@ const contentUpdate = async (req: Request, res: Response) => {
 
   // Check l1_skill
   if (dataBody.l1_skill_id) {
-    const l1Skill = await getSkillById(dataBody.l1_skill_id);
+    const l1Skill = await skillService.getSkillById(dataBody.l1_skill_id);
     if (!l1Skill || l1Skill.type !== SkillType.L1_SKILL) {
       const code = 'L1_SKILL_NOT_EXISTS';
       logger.error({ code, message: `L1 Skill not exists` });
@@ -127,7 +127,7 @@ const contentUpdate = async (req: Request, res: Response) => {
   if (dataBody.l2_skill_ids) {
     const l2SkillObjects = [];
     for (const l2SkillId of dataBody.l2_skill_ids || []) {
-      const l2Skill = await getSkillById(l2SkillId);
+      const l2Skill = await skillService.getSkillById(l2SkillId);
       if (!l2Skill || l2Skill.type !== SkillType.L2_SKILL) {
         const code = 'L2_SKILL_NOT_EXISTS';
         logger.error({ code, message: `L2 Skill not exists` });
@@ -145,7 +145,7 @@ const contentUpdate = async (req: Request, res: Response) => {
   if (dataBody.l3_skill_ids) {
     const l3SkillObjects = [];
     for (const l3SkillId of dataBody.l3_skill_ids || []) {
-      const l3Skill = await getSkillById(l3SkillId);
+      const l3Skill = await skillService.getSkillById(l3SkillId);
       if (!l3Skill || l3Skill.type !== SkillType.L3_SKILL) {
         const code = 'L3_SKILL_NOT_EXISTS';
         logger.error({ code, message: `L3 Skill not exists` });

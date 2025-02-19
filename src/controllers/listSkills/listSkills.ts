@@ -6,7 +6,7 @@ import { schemaValidation } from '../../services/validationService';
 import listSkillJson from './listSkillsValidationSchema.json';
 import { amlError } from '../../types/amlError';
 import logger from '../../utils/logger';
-import { getSkillList } from '../../services/skill';
+import { skillService } from '../../services/skillService';
 
 const listSkills = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -19,7 +19,7 @@ const listSkills = async (req: Request, res: Response) => {
     logger.error({ code, apiId, msgid, resmsgid, requestBody, message: isRequestValid.message });
     throw amlError(code, isRequestValid.message, 'BAD_REQUEST', 400);
   }
-  const skillData = await getSkillList(requestBody.request);
+  const skillData = await skillService.getSkillList(requestBody.request);
 
   logger.info({ apiId, requestBody, message: `Skills are listed successfully` });
   ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: skillData });
