@@ -9,7 +9,6 @@ import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { getFileUrlByFolderAndFileName } from '../../services/awsService';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
-import { getRepositoryById } from '../../services/repository';
 import { boardService } from '../../services/boardService';
 import { SkillType } from '../../enums/skillType';
 import { getSubSkill } from '../../services/subSkill';
@@ -18,6 +17,7 @@ import { questionSetQuestionMappingService } from '../../services/questionSetQue
 import { questionSetService } from '../../services/questionSetService';
 import { userService } from '../../services/userService';
 import { skillService } from '../../services/skillService';
+import { repositoryService } from '../../services/repositoryService';
 
 export const searchQuestions = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -102,7 +102,7 @@ export const searchQuestions = async (req: Request, res: Response) => {
     const { filters } = requestBody.request;
     if (filters) {
       if (filters.repository_id) {
-        const repository = await getRepositoryById(filters.repository_id);
+        const repository = await repositoryService.getRepositoryById(filters.repository_id);
         if (repository) {
           _.set(repositories, repository.identifier, repository);
         }

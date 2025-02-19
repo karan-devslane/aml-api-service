@@ -4,10 +4,10 @@ import * as _ from 'lodash';
 import httpStatus from 'http-status';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { findRepositoryAssociationsByRepositoryId } from '../../services/repositoryAssociation';
-import { getRepositoryById } from '../../services/repository';
 import { boardService } from '../../services/boardService';
 import { tenantService } from '../../services/tenantService';
 import { learnerService } from '../../services/learnerService';
+import { repositoryService } from '../../services/repositoryService';
 
 export const apiId = 'api.repository.read';
 
@@ -24,7 +24,7 @@ const repositoryAssociationsReadByRepositoryId = async (req: Request, res: Respo
   const learnerIds = _.uniq(repositoryAssociations.map((assoc) => assoc.learner_id).filter((id) => id));
 
   // Fetch related entities
-  const repositories = repositoryIds?.length ? await Promise.all(repositoryIds.map((id) => getRepositoryById(id))) : [];
+  const repositories = repositoryIds?.length ? await Promise.all(repositoryIds.map((id) => repositoryService.getRepositoryById(id))) : [];
   const boards = boardIds?.length ? await Promise.all(boardIds.map((id: any) => boardService.getBoardByIdentifier(id))) : [];
   const tenants = tenantIds?.length ? await Promise.all(tenantIds.map((id: any) => tenantService.getTenant(id))) : [];
   const learners = learnerIds?.length ? await Promise.all(learnerIds.map((id: any) => learnerService.getLearnerByIdentifier(id))) : [];

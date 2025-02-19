@@ -8,7 +8,6 @@ import { schemaValidation } from '../../services/validationService';
 import * as uuid from 'uuid';
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
-import { getRepositoryById } from '../../services/repository';
 import { boardService } from '../../services/boardService';
 import { SkillType } from '../../enums/skillType';
 import { getSubSkill } from '../../services/subSkill';
@@ -21,6 +20,7 @@ import { questionSetService } from '../../services/questionSetService';
 import { questionSetQuestionMappingService } from '../../services/questionSetQuestionMappingService';
 import { AudioManager } from '../../services/AudioManager';
 import { skillService } from '../../services/skillService';
+import { repositoryService } from '../../services/repositoryService';
 
 const createQuestion = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -40,7 +40,7 @@ const createQuestion = async (req: Request, res: Response) => {
 
   // Check repository
   const repositoryId = dataBody.repository_id;
-  const repository = await getRepositoryById(repositoryId);
+  const repository = await repositoryService.getRepositoryById(repositoryId);
   if (!repository) {
     const code = 'REPOSITORY_NOT_EXISTS';
     logger.error({ code, apiId, msgid, resmsgid, message: `Repository not exists` });

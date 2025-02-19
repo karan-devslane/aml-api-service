@@ -6,7 +6,7 @@ import questionSearch from './repositorySearchValidationSchema.json';
 import { schemaValidation } from '../../services/validationService';
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
-import { getRepositoryList } from '../../services/repository';
+import { repositoryService } from '../../services/repositoryService';
 
 export const apiId = 'api.repository.search';
 
@@ -22,7 +22,7 @@ export const searchRepositories = async (req: Request, res: Response) => {
     throw amlError(code, isRequestValid.message, 'BAD_REQUEST', 400);
   }
 
-  let questionSetData = await getRepositoryList(requestBody.request);
+  let questionSetData = await repositoryService.getRepositoryList(requestBody.request);
   questionSetData = _.map(questionSetData, (data: any) => {
     return data?.dataValues;
   });

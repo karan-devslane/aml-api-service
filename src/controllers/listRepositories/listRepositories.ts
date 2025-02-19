@@ -8,8 +8,8 @@ import { amlError } from '../../types/amlError';
 import logger from '../../utils/logger';
 import { Repository } from '../../models/repository';
 import { getRepositoryIds } from '../../services/repositoryAssociation';
-import { getRepositoryListByIds } from '../../services/repository';
 import { tenantService } from '../../services/tenantService';
+import { repositoryService } from '../../services/repositoryService';
 
 interface RepositoryResponse {
   repositories: Repository[];
@@ -39,10 +39,10 @@ const listRepositories = async (req: Request, res: Response) => {
     const tenant = await tenantService.getTenant(user.tenant_id);
     if (tenant) {
       const repositoryIdentifiers = await getRepositoryIds(tenant.identifier);
-      repositoryData = await getRepositoryListByIds(requestBody.request, repositoryIdentifiers);
+      repositoryData = await repositoryService.getRepositoryListByIds(requestBody.request, repositoryIdentifiers);
     }
   } else {
-    repositoryData = await getRepositoryListByIds(requestBody.request);
+    repositoryData = await repositoryService.getRepositoryListByIds(requestBody.request);
   }
 
   logger.info({ apiId, requestBody, message: `Repositories are listed successfully` });

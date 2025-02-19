@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import logger from '../../utils/logger';
 import * as _ from 'lodash';
 import httpStatus from 'http-status';
-import { getRepositoryById } from '../../services/repository'; // Adjust import path as needed
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
+import { repositoryService } from '../../services/repositoryService';
 
 export const apiId = 'api.repository.read';
 
@@ -14,7 +14,7 @@ const repositoryReadById = async (req: Request, res: Response) => {
   const resmsgid = _.get(res, 'resmsgid');
 
   // Fetch repository details by identifier
-  const repositoryDetails = await getRepositoryById(repository_id);
+  const repositoryDetails = await repositoryService.getRepositoryById(repository_id);
 
   // Validating if repository exists
   if (_.isEmpty(repositoryDetails)) {
