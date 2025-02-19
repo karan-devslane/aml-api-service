@@ -14,6 +14,8 @@ import initializeSubTopicHierarchyTable from '../controllers/dataMigrations/init
 import initializeSubTopicNQLTypeTable from '../controllers/dataMigrations/initializeSubTopicNQLTypeTable';
 import initializeAccuracyThresholdsTable from '../controllers/dataMigrations/initializeAccuracyThresholdsTable';
 import initializeSubTopicMasterTable from '../controllers/dataMigrations/initializeSubTopicMasterTable';
+import initializeSubSkillMasterTable from '../controllers/dataMigrations/initializeSubSkillMasterTable';
+import initializeSubSkillValuesTable from '../controllers/dataMigrations/initializeSubSkillValuesTable';
 
 export const dataMigrations = express.Router();
 
@@ -37,6 +39,7 @@ dataMigrations.post('/generate-audio-for-descriptions', generateAudioForDescript
 
 dataMigrations.post('/create-audio-question-mapping', createAudioQuestionMapping);
 
+// ******** NQL APIS **********
 dataMigrations.post('/initialize-question-meta-table', initializeQuestionMetaTable);
 
 dataMigrations.post('/initialize-sub-topic-master-table', initializeSubTopicMasterTable);
@@ -46,3 +49,7 @@ dataMigrations.post('/initialize-sub-topic-hierarchy-table', initializeSubTopicH
 dataMigrations.post('/initialize-sub-topic-nql-type-table', initializeSubTopicNQLTypeTable);
 
 dataMigrations.post('/initialize-accuracy-thresholds-table', initializeAccuracyThresholdsTable);
+
+dataMigrations.post('/initialize-sub-skill-master-table', initializeSubSkillMasterTable);
+
+dataMigrations.post('/initialize-sub-skill-values-table', initializeSubSkillValuesTable);
