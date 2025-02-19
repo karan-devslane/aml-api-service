@@ -9,10 +9,10 @@ import { ResponseHandler } from '../../utils/responseHandler';
 import repositoryAssociationsCreateValidationSchema from './repositoryAssociationsCreateValidationSchema.json';
 import { User } from '../../models/users';
 import { checkIfAssociationExists, createRepositoryAssociations, getMaxSequenceForEntity } from '../../services/repositoryAssociation';
-import { getRepositoryById } from '../../services/repository';
 import { boardService } from '../../services/boardService';
 import { tenantService } from '../../services/tenantService';
 import { learnerService } from '../../services/learnerService';
+import { repositoryService } from '../../services/repositoryService';
 
 export const apiId = 'api.repository.associations.create';
 
@@ -89,7 +89,7 @@ const createRepositoryAssociation = async (req: Request, res: Response) => {
   const learnerIds = _.uniq(associations.map((assoc) => assoc.learner_id).filter((id) => id));
 
   // Fetch related entities
-  const repositories = repositoryIds?.length ? await Promise.all(repositoryIds.map((id) => getRepositoryById(id))) : [];
+  const repositories = repositoryIds?.length ? await Promise.all(repositoryIds.map((id) => repositoryService.getRepositoryById(id))) : [];
   const boards = boardIds?.length ? await Promise.all(boardIds.map((id: any) => boardService.getBoardByIdentifier(id))) : [];
   const tenants = tenantIds?.length ? await Promise.all(tenantIds.map((id: any) => tenantService.getTenant(id))) : [];
   const learners = learnerIds?.length ? await Promise.all(learnerIds.map((id: any) => learnerService.getLearnerByIdentifier(id))) : [];

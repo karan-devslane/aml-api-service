@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import * as _ from 'lodash';
 import httpStatus from 'http-status';
-import { getRepositoryById, updateRepository } from '../../services/repository';
 import { schemaValidation } from '../../services/validationService';
 import logger from '../../utils/logger';
 import repositoryUpdateSchema from './repositoryUpdateValidationSchema.json'; // Ensure this schema file is defined correctly
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { User } from '../../models/users';
+import { repositoryService } from '../../services/repositoryService';
 
 export const apiId = 'api.repository.update';
 
@@ -28,7 +28,7 @@ const repositoryUpdate = async (req: Request, res: Response) => {
   }
 
   // Validate repository existence
-  const repository = await getRepositoryById(repository_id);
+  const repository = await repositoryService.getRepositoryById(repository_id);
   if (_.isEmpty(repository)) {
     const code = 'REPOSITORY_NOT_EXISTS';
     logger.error({ code, apiId, msgid, resmsgid, message: `Repository does not exist with identifier: ${repository_id}` });
@@ -40,7 +40,7 @@ const repositoryUpdate = async (req: Request, res: Response) => {
   updatedDataBody.updated_by = loggedInUser?.identifier ?? 'manual';
 
   // Update Repository
-  const [, affectedRows] = await updateRepository(repository_id, { ...dataBody, ...updatedDataBody });
+  const [, affectedRows] = await repositoryService.updateRepository(repository_id, { ...dataBody, ...updatedDataBody });
   const updatedRepository = affectedRows[0].dataValues;
 
   logger.info({ apiId, msgid, resmsgid, repository_id, message: 'Repository successfully updated' });

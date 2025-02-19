@@ -9,12 +9,12 @@ import { ResponseHandler } from '../../utils/responseHandler';
 import { questionSetService } from '../../services/questionSetService';
 import { boardService } from '../../services/boardService';
 import { UserTransformer } from '../../transformers/entity/user.transformer';
-import { getRepositoryById } from '../../services/repository';
 import { SkillType } from '../../enums/skillType';
 import { getSubSkill } from '../../services/subSkill';
 import { classService } from '../../services/classService';
 import { userService } from '../../services/userService';
 import { skillService } from '../../services/skillService';
+import { repositoryService } from '../../services/repositoryService';
 
 export const searchQuestionSets = async (req: Request, res: Response) => {
   const apiId = _.get(req, 'id');
@@ -75,7 +75,7 @@ export const searchQuestionSets = async (req: Request, res: Response) => {
     const { filters } = requestBody.request;
     if (filters) {
       if (filters.repository_id) {
-        const repository = await getRepositoryById(filters.repository_id);
+        const repository = await repositoryService.getRepositoryById(filters.repository_id);
         if (repository) {
           _.set(repositories, repository.identifier, repository);
         }

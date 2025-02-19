@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import logger from '../../utils/logger';
 import * as _ from 'lodash';
 import httpStatus from 'http-status';
-import { discardRepositoryByIdentifier, getRepositoryById } from '../../services/repository'; // Adjust import path as needed
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
+import { repositoryService } from '../../services/repositoryService';
 
 export const apiId = 'api.repository.discard';
 
@@ -14,7 +14,7 @@ const discardRepositoryById = async (req: Request, res: Response) => {
   const resmsgid = _.get(res, 'resmsgid');
 
   // Fetch repository details by identifier
-  const repositoryDetails = await getRepositoryById(repository_id);
+  const repositoryDetails = await repositoryService.getRepositoryById(repository_id);
 
   // Validating if repository exists
   if (_.isEmpty(repositoryDetails)) {
@@ -24,7 +24,7 @@ const discardRepositoryById = async (req: Request, res: Response) => {
   }
 
   // Discard (hard delete) the repository
-  await discardRepositoryByIdentifier(repository_id);
+  await repositoryService.discardRepositoryByIdentifier(repository_id);
 
   logger.info({ apiId, msgid, resmsgid, repository_id, message: 'Repository discard successfully' });
   ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Repository discard successfully' } });

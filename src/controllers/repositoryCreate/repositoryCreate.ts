@@ -3,13 +3,13 @@ import logger from '../../utils/logger';
 import * as _ from 'lodash';
 import repositorySchema from './repositoryCreateValidationSchema.json';
 import httpStatus from 'http-status';
-import { createRepositoryData } from '../../services/repository';
 import { schemaValidation } from '../../services/validationService';
 import { amlError } from '../../types/amlError';
 import { ResponseHandler } from '../../utils/responseHandler';
 import { v4 as uuidv4 } from 'uuid';
 import { Status } from '../../enums/status';
 import { User } from '../../models/users';
+import { repositoryService } from '../../services/repositoryService';
 
 export const apiId = 'api.repository.create';
 
@@ -36,7 +36,7 @@ const createRepository = async (req: Request, res: Response) => {
     created_by: loggedInUser?.identifier ?? 'manual',
   });
 
-  const repository = await createRepositoryData(repositoryInsertData);
+  const repository = await repositoryService.createRepositoryData(repositoryInsertData);
 
   logger.info({ apiId, requestBody, message: `Repository Created Successfully with identifier` });
   ResponseHandler.successResponse(req, res, { status: httpStatus.OK, data: { message: 'Repository Successfully Created', identifier: repository.identifier, repository } });
