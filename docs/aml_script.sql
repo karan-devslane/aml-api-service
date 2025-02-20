@@ -2490,7 +2490,7 @@ create table if not exists primary_skill_combinations
     sub_topic_id   varchar(255)             not null,
     priority_level integer                  not null,
     level          integer[]                not null,
-    sub_skill_ids  varchar(255)[]           not null,
+    sub_skill_value_ids  varchar(255)[]           not null,
     created_by     varchar(255)             not null,
     updated_by     varchar(255),
     created_at     timestamp with time zone not null,

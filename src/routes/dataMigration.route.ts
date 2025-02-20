@@ -16,6 +16,7 @@ import initializeAccuracyThresholdsTable from '../controllers/dataMigrations/ini
 import initializeSubTopicMasterTable from '../controllers/dataMigrations/initializeSubTopicMasterTable';
 import initializeSubSkillMasterTable from '../controllers/dataMigrations/initializeSubSkillMasterTable';
 import initializeSubSkillValuesTable from '../controllers/dataMigrations/initializeSubSkillValuesTable';
+import initializePrimarySkillCombinationsTable from '../controllers/dataMigrations/initializePrimarySkillCombinationsTable';
 
 export const dataMigrations = express.Router();
 
@@ -53,3 +54,5 @@ dataMigrations.post('/initialize-accuracy-thresholds-table', initializeAccuracyT
 dataMigrations.post('/initialize-sub-skill-master-table', initializeSubSkillMasterTable);
 
 dataMigrations.post('/initialize-sub-skill-values-table', initializeSubSkillValuesTable);
+
+dataMigrations.post('/initialize-primary-skill-combinations-table', initializePrimarySkillCombinationsTable);

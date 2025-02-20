@@ -36,7 +36,7 @@ export = {
         type: DataTypes.ARRAY(DataTypes.INTEGER),
         allowNull: false,
       },
-      sub_skill_ids: {
+      sub_skill_value_ids: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
       },

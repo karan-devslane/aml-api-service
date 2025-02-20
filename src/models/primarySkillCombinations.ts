@@ -9,7 +9,7 @@ export class PrimarySkillCombinations extends Model {
   declare sub_topic_id: string;
   declare priority_level: number;
   declare level: number[];
-  declare sub_skill_ids: string[];
+  declare sub_skill_value_ids: string[];
   declare created_by: string;
   declare updated_by: string;
 }
@@ -42,7 +42,7 @@ PrimarySkillCombinations.init(
       type: DataTypes.ARRAY(DataTypes.INTEGER),
       allowNull: false,
     },
-    sub_skill_ids: {
+    sub_skill_value_ids: {
       type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
     },
